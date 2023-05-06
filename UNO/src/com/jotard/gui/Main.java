@@ -80,7 +80,7 @@ public class Main extends JFrame implements ActionListener {
 
 		buttonPanel.add(Box.createGlue());
 
-		button1 = new JButton("Play Game");
+		button1 = new JButton("4-Player Game");
 		button1.setAlignmentX(CENTER_ALIGNMENT);
 		buttonPanel.add(button1);
 
@@ -122,7 +122,7 @@ public class Main extends JFrame implements ActionListener {
 		if (e.getSource() == button4)
 			System.exit(0);
 		if (e.getSource() == button1) {
-			new GameSetup(this);
+			Game.main(null);
 		}
 	}
 
@@ -154,7 +154,11 @@ public class Main extends JFrame implements ActionListener {
 		try {
 			f = Font.createFont(Font.TRUETYPE_FONT, Main.class.getResourceAsStream("/font/Stroud-anB5.ttf"));
 			UIManager.setLookAndFeel(new NimbusLookAndFeel());
-			UIManager.getLookAndFeelDefaults().put("Button.font", f.deriveFont(25f));
+			UIManager.getLookAndFeelDefaults().forEach((k, v) -> {
+				if (k.toString().matches("\\w+.font")) {
+					UIManager.getLookAndFeelDefaults().put(k, f.deriveFont(26f));
+				}
+			});
 		} catch (FontFormatException | IOException | UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
 		}

@@ -35,6 +35,13 @@ public class ImageManager {
 		return null;
 	}
 
+	public Image getScaledImage(String name, double scaleMultiplier) {
+		Image original = getImage(name);
+		if (original == null)
+			return null;
+		return original.getScaledInstance((int) (original.getWidth(null) * scaleMultiplier), (int) (original.getHeight(null) * scaleMultiplier), Image.SCALE_SMOOTH);
+	}
+
 	public void loadAndCacheImage(String url, double scaleMultiplier) throws IOException {
 		BufferedImage img = ImageIO.read(getClass().getResourceAsStream(IMG_DIRECTORY + url + IMG_FILE_EXT));
 		if (img != null) {
