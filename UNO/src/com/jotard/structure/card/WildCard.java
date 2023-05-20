@@ -1,6 +1,6 @@
-package structure.card;
+package com.jotard.structure.card;
 
-import structure.game.GameManager;
+import com.jotard.structure.game.GameManager;
 
 public class WildCard implements Card {
 
@@ -13,7 +13,7 @@ public class WildCard implements Card {
 	
 	@Override
 	public String toString() {
-		return "Wild" + (this.drawFour ? " +4" : "") + (this.color == null ? "" : "-" + this.color);
+		return "Wild:" + (this.drawFour ? " +4" : "") + (this.color == null ? "" : "-" + this.color);
 	}
 
 	@Override

@@ -37,6 +37,8 @@ import javax.swing.plaf.metal.MetalButtonUI;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import javax.swing.plaf.synth.SynthButtonUI;
 
+import com.jotard.controller.GameController;
+import com.jotard.controller.IController;
 import com.jotard.image.ImageManager;
 
 public class Main extends JFrame implements ActionListener {
@@ -45,8 +47,9 @@ public class Main extends JFrame implements ActionListener {
 	private static final int SCREEN_WIDTH = 1000;
 	private static final int SCREEN_HEIGHT = 640;
 	private JButton button1, button4;
+	private IController controller;
 
-	public Main() {
+	public Main(IController controller) {
 		super("UNO!");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		getContentPane().setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
@@ -54,12 +57,13 @@ public class Main extends JFrame implements ActionListener {
 		setLocationRelativeTo(null);
 		createMenu();
 		setVisible(true);
+		this.controller = controller;
 	}
 
 	private void createMenu() {
 		getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 		add(Box.createGlue());
-		JLabel label = new JLabel(new ImageIcon(ImageManager.getInstance().getImage("Uno Logo")));
+		JLabel label = new JLabel(new ImageIcon(ImageManager.getInstance().getScaledImage("/image/Uno Logo.png", 0.085d)));
 		label.setAlignmentX(CENTER_ALIGNMENT);
 		add(label);
 		add(Box.createGlue());
@@ -86,18 +90,6 @@ public class Main extends JFrame implements ActionListener {
 
 		buttonPanel.add(Box.createGlue());
 
-//		JButton button2 = new JButton("Instructions");
-//		button2.setAlignmentX(CENTER_ALIGNMENT);
-//		buttonPanel.add(button2);
-//		
-//		buttonPanel.add(Box.createGlue());
-//		
-//		JButton button3 = new JButton("Settings");
-//		button3.setAlignmentX(CENTER_ALIGNMENT);
-//		buttonPanel.add(button3);
-//		
-//		buttonPanel.add(Box.createGlue());
-
 		button4 = new JButton("Exit");
 		button4.setAlignmentX(CENTER_ALIGNMENT);
 		buttonPanel.add(button4);
@@ -122,34 +114,12 @@ public class Main extends JFrame implements ActionListener {
 		if (e.getSource() == button4)
 			System.exit(0);
 		if (e.getSource() == button1) {
-			Game.main(null);
+			this.dispose();
+			controller.createGame();
 		}
 	}
 
-	public static void main(String[] args) throws IOException {
-
-		String[] color = { "Blue", "Green", "Red", "Yellow" };
-		String[] number = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "Draw", "Reverse", "Skip" };
-		ImageManager iManager = ImageManager.getInstance();
-		double cardSize = 0.25d;
-		iManager.loadAndCacheImage("Wild");
-		iManager.loadAndCacheImage("Wild_Draw");
-		iManager.loadAndCacheImage("Deck");
-		iManager.loadAndCacheImage("Uno Logo", 0.085d);
-		for (String c : color)
-			for (String n : number)
-				iManager.loadAndCacheImage(c + "_" + n);
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				editUI();
-				Main m = new Main();
-				m.makeEvents();
-			}
-		});
-	}
-
-	private static void editUI() {
+	public void editUI() {
 		Font f;
 		try {
 			f = Font.createFont(Font.TRUETYPE_FONT, Main.class.getResourceAsStream("/font/Stroud-anB5.ttf"));

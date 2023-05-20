@@ -1,6 +1,6 @@
-package structure.card;
+package com.jotard.structure.card;
 
-import structure.game.GameManager;
+import com.jotard.structure.game.GameManager;
 
 public class ActionCard implements Card {
 	public static final int DRAW_TWO = 0;
@@ -12,7 +12,7 @@ public class ActionCard implements Card {
 
 	@Override
 	public String toString() {
-		String result = this.color + " ";
+		String result = "Action:" + this.color + " ";
 		switch (functionType) {
 		case DRAW_TWO:
 			result += "+2";

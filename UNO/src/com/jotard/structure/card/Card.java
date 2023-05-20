@@ -1,6 +1,6 @@
-package structure.card;
+package com.jotard.structure.card;
 
-import structure.game.GameManager;
+import com.jotard.structure.game.GameManager;
 
 public interface Card {
 	

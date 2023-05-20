@@ -1,16 +1,19 @@
-package structure.game;
+package com.jotard.structure.game;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import structure.card.Card;
-import structure.deck.Deck;
-import structure.player.HumanPlayer;
-import structure.player.PlayerManager;
+import com.jotard.controller.Subscriber;
+import com.jotard.structure.card.Card;
+import com.jotard.structure.deck.Deck;
+import com.jotard.structure.player.CPUPlayer;
+import com.jotard.structure.player.HumanPlayer;
+import com.jotard.structure.player.PlayerManager;
 
 public class Game implements GameManager{
 	
+	private List<Subscriber> subscribers;
 	private Deck deck;
 	private Card lastPlayedCard;
 	private boolean isPlaying;
@@ -21,13 +24,15 @@ public class Game implements GameManager{
 
 	public Game(int numPlayers) {
 		super();
+		this.subscribers = new ArrayList<>();
 		this.deck = new Deck(this);
 		this.isPlaying = false;
 		this.normalOrder = true;
 		scanner = new Scanner(System.in);
 		this.playerList = new ArrayList<>();
+		this.playerList.add(new HumanPlayer("You", this));
 		for (int i = 0; i < numPlayers; i++)
-			this.playerList.add(new HumanPlayer("Player " + i+1, this));
+			this.playerList.add(new CPUPlayer("Player " + i+1, this));
 	}
 	
 	public void startGame() {
@@ -105,14 +110,35 @@ public class Game implements GameManager{
 	public void reverseTurn() {
 		this.normalOrder = !this.normalOrder;
 	}
-	
-	public static void main(String[] args) {
-		new Game(2).startGame();
-	}
 
 	@Override
 	public Scanner getInput() {
 		return scanner;
+	}
+
+	@Override
+	public void addSubscriber(Subscriber s) {
+		this.subscribers.add(s);
+	}
+
+	@Override
+	public void removeSubscriber(Subscriber s) {
+		this.subscribers.remove(s);
+	}
+
+	@Override
+	public void notifySubscribers() {
+		subscribers.forEach((subscriber) -> {subscriber.notifyFromModelPublisher();});
+	}
+
+	@Override
+	public List<PlayerManager> getPlayersList() {
+		return this.playerList;
+	}
+
+	@Override
+	public Card getLastPlayedCard() {
+		return this.lastPlayedCard;
 	}
 	
 }

@@ -1,14 +1,14 @@
-package structure.deck;
+package com.jotard.structure.deck;
 
 import java.util.Comparator;
 import java.util.Random;
 import java.util.Stack;
 
-import structure.card.Card;
-import structure.card.CardFactory;
-import structure.game.Game;
-import structure.game.GameManager;
-import structure.player.PlayerManager;
+import com.jotard.structure.card.Card;
+import com.jotard.structure.card.CardFactory;
+import com.jotard.structure.game.Game;
+import com.jotard.structure.game.GameManager;
+import com.jotard.structure.player.PlayerManager;
 
 public class Deck {
 	

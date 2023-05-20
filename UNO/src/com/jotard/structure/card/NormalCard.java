@@ -1,6 +1,6 @@
-package structure.card;
+package com.jotard.structure.card;
 
-import structure.game.GameManager;
+import com.jotard.structure.game.GameManager;
 
 public class NormalCard implements Card{
 	private String color;
@@ -13,7 +13,7 @@ public class NormalCard implements Card{
 	
 	@Override
 	public String toString() {
-		return this.color + " " + this.number;
+		return "Normal:" + this.color + " " + this.number;
 	}
 	
 	@Override

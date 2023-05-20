@@ -1,11 +1,11 @@
-package structure.player;
+package com.jotard.structure.player;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import structure.card.Card;
-import structure.deck.Deck;
-import structure.game.GameManager;
+import com.jotard.structure.card.Card;
+import com.jotard.structure.deck.Deck;
+import com.jotard.structure.game.GameManager;
 
 public class HumanPlayer implements PlayerManager {
 
@@ -58,55 +58,23 @@ public class HumanPlayer implements PlayerManager {
 			this.isBanned = false;
 			return;
 		}
-		System.out.println("Last played card : " + lastCardPlayed);
-		System.out.println(name + "'s hand = " + cardHand);
-		System.out.println(
-				"what's " + name + " gonna do? play <0-index card hand>: play card, draw: draw a card, end: endturn");
-		promptingAction(false);
-		System.out.println(name + "'s turn ended.");
 	}
 
 	private void promptingAction(boolean hasDrawnFirstCard) {
-		String cmd = null;
-		do {
-			System.out.print("Your action ?");
-			cmd = gameManager.getInput().nextLine();
-		} while (!(cmd.equals("draw") || cmd.matches("play \\d+") || cmd.equals("end")));
-		
-		if (cmd.equals("draw")) {
-			if (hasDrawnFirstCard) {
-				System.out.println("Error: you have drawn a card, play a card or end your turn");
-				promptingAction(true);
-				return;
-			}
-			else {
-				drawCard();
-				hasDrawnFirstCard = true;
-				System.out.println(name + "'s hand = " + cardHand);
-				promptingAction(true);
-				return;
-			}
+	}
+
+	private void promptDraw(boolean hasDrawnFirstCard) {
+		if (hasDrawnFirstCard) {
+			System.out.println("Error: you have drawn a card, play a card or end your turn");
+			promptingAction(true);
+			return;
 		}
-		else if (cmd.equals("end")) {
-			if (!hasDrawnFirstCard) {
-				System.out.println("Error: you haven't draw a card before ending the turn, use draw");
-				promptingAction(hasDrawnFirstCard);
-				return;
-			}
-		}
-		else if (cmd.matches("play \\d+")) {
-			if (Integer.valueOf(cmd.substring(5)) < 0 || Integer.valueOf(cmd.substring(5)) >= this.cardHand.size()) {
-				System.out.println("Error: the card with that index from your hand does not exists");
-				promptingAction(hasDrawnFirstCard);
-				return;
-			}
-			int index = Integer.valueOf(cmd.substring(5));
-			if (this.cardHand.get(index).getColor() == null) {
-				playCard(this.cardHand.get(index));
-			}
-			else if (this.cardHand.get(index).getColor().equals(this.lastCardPlayed.getColor())
-					|| this.cardHand.get(index).getNumber() == this.lastCardPlayed.getNumber()) 
-				playCard(this.cardHand.get(index));
+		else {
+			drawCard();
+			hasDrawnFirstCard = true;
+			System.out.println(name + "'s hand = " + cardHand);
+			promptingAction(true);
+			return;
 		}
 	}
 
@@ -143,6 +111,20 @@ public class HumanPlayer implements PlayerManager {
 	@Override
 	public String toString() {
 		return name;
+	}
+	
+	public String getPlayerName() {
+		return this.name;
+	}
+
+	@Override
+	public boolean isCPU() {
+		return false;
+	}
+
+	@Override
+	public List<Card> getPlayerHand() {
+		return this.cardHand;
 	}
 
 }

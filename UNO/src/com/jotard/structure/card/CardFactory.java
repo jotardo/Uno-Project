@@ -1,4 +1,4 @@
-package structure.card;
+package com.jotard.structure.card;
 
 public class CardFactory {
 
