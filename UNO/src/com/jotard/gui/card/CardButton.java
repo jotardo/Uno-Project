@@ -9,7 +9,7 @@ import java.awt.Image;
 import javax.swing.JButton;
 
 import com.jotard.image.ImageManager;
-import com.jotard.structure.game.GameManager;
+import com.jotard.structure.game.GameModel;
 
 public abstract class CardButton extends JButton{
 	
@@ -18,12 +18,15 @@ public abstract class CardButton extends JButton{
 	public static final String BLUE = "Blue";
 	public static final String YELLOW = "Yellow";
 	protected String color;
+	protected String imageURL;
 	protected Image image;
 	private static final Color FADING_COLOR = new Color(0, 0, 0, 128);
 	
 	public CardButton(String image) {
-		this.image = ImageManager.getInstance().getScaledImage(image, 0.2d);
-		setPreferredSize(new Dimension(this.image.getWidth(null), this.image.getHeight(null)));
+		this.imageURL = image;
+		this.image = ImageManager.getInstance().getScaledImage(this.imageURL, 0.25d);
+		if (this.image != null) 
+			setPreferredSize(new Dimension(this.image.getWidth(null), this.image.getHeight(null)));
 		setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 	}
 	
@@ -40,6 +43,10 @@ public abstract class CardButton extends JButton{
 	
 	public Image getImage() {
 		return image;
+	}
+	
+	public String getImageURL() {
+		return imageURL;
 	}
 	
 	public String getColor() {

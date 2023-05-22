@@ -1,14 +1,15 @@
 package com.jotard.gui.card;
 
-import com.jotard.structure.game.GameManager;
+import com.jotard.structure.game.GameModel;
 
 public class WildCardButton extends CardButton {
 
 	private boolean drawFour;
 
 	public WildCardButton(boolean drawFour) {
-		super(drawFour ? "/image/Wild.png" : "/image/Wild_Draw.png");
+		super(drawFour ? "/image/Wild_Draw.png" : "/image/Wild.png");
 		this.drawFour = drawFour;
+		setToolTipText(this.toString());
 	}
 	
 	@Override

@@ -1,7 +1,5 @@
 package com.jotard.gui.card;
 
-import com.jotard.structure.game.GameManager;
-
 public class ActionCardButton extends CardButton {
 	public static final int DRAW_TWO = 0;
 	public static final int REVERSE = 1;
@@ -21,7 +19,7 @@ public class ActionCardButton extends CardButton {
 			result += "Reverse";
 			break;
 		case BAN:
-			result += "Ban";
+			result += "Skip";
 			break;
 		}
 		return result;
@@ -31,6 +29,7 @@ public class ActionCardButton extends CardButton {
 		super("/image/" + color + "_" + convertFunctionType(functionType) + ".png");
 		this.color = color;
 		this.functionType = functionType;
+		setToolTipText(this.toString());
 	}
 
 	@Override
@@ -57,7 +56,7 @@ public class ActionCardButton extends CardButton {
 		case REVERSE:
 			return "Reverse";
 		case BAN:
-			return "Ban";
+			return "Skip";
 		default:
 			return null;
 		}

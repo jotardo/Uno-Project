@@ -1,6 +1,6 @@
 package com.jotard.structure.card;
 
-import com.jotard.structure.game.GameManager;
+import com.jotard.structure.game.GameModel;
 
 public class NormalCard implements Card{
 	private String color;
@@ -25,7 +25,7 @@ public class NormalCard implements Card{
 		return number;
 	}
 	@Override
-	public void play(GameManager gm) {
+	public void play(GameModel gm) {
 		gm.setLastPlayedCard(this);
 	}
 }

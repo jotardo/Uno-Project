@@ -1,6 +1,6 @@
 package com.jotard.structure.card;
 
-import com.jotard.structure.game.GameManager;
+import com.jotard.structure.game.GameModel;
 
 public interface Card {
 	
@@ -11,5 +11,5 @@ public interface Card {
 	
 	public String getColor();
 	public int getNumber();
-	public void play(GameManager gameManager);
+	public void play(GameModel gameManager);
 }

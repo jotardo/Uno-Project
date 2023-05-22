@@ -3,19 +3,13 @@ package com.jotard.structure.game;
 import java.util.List;
 import java.util.Scanner;
 
-import com.jotard.controller.Subscriber;
 import com.jotard.structure.card.Card;
 import com.jotard.structure.player.PlayerManager;
 
-public interface GameManager {
+public interface GameModel {
 	
-	public Scanner getInput();
-	
-	//publisher
-	public void addSubscriber(Subscriber s);
-	public void removeSubscriber(Subscriber s);
-	public void notifySubscribers();
 	//game
+	public void startGame();
 	public void notifyDeck();
 	public void notifyLastCard();
 	public void setLastPlayedCard(Card card);

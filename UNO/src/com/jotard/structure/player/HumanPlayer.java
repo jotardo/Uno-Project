@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.jotard.structure.card.Card;
 import com.jotard.structure.deck.Deck;
-import com.jotard.structure.game.GameManager;
+import com.jotard.structure.game.GameModel;
 
 public class HumanPlayer implements PlayerManager {
 
@@ -13,12 +13,12 @@ public class HumanPlayer implements PlayerManager {
 	private List<Card> cardHand;
 	private Deck deck;
 	private Card lastCardPlayed;
-	private GameManager gameManager;
+	private GameModel gameManager;
 
 	private boolean isBanned;
 	private int startDraw;
 
-	public HumanPlayer(String name, GameManager gm) {
+	public HumanPlayer(String name, GameModel gm) {
 		this.name = name;
 		this.cardHand = new ArrayList<>();
 		this.isBanned = false;
@@ -115,11 +115,6 @@ public class HumanPlayer implements PlayerManager {
 	
 	public String getPlayerName() {
 		return this.name;
-	}
-
-	@Override
-	public boolean isCPU() {
-		return false;
 	}
 
 	@Override

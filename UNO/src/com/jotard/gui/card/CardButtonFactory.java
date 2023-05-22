@@ -3,6 +3,14 @@ package com.jotard.gui.card;
 import com.jotard.structure.card.Card;
 
 public class CardButtonFactory {
+	
+	private static CardButtonFactory instance;
+	
+	public static CardButtonFactory getInstance() {
+		if (instance == null)
+			instance = new CardButtonFactory();
+		return instance;
+	}
 
 	public CardButton createNormalCard(String c, int i) {
 		return new NormalCardButton(c, i);
@@ -31,7 +39,7 @@ public class CardButtonFactory {
 	public CardButton createCard(Card c) {
 		String s = c.toString();
 		String[] sArr = null;
-		CardButton result;
+		CardButton result = null;
 		if (c != null) {
 			if (s.startsWith("Normal:")) {
 				result = createNormalCard(c.getColor(), c.getNumber());
@@ -52,10 +60,9 @@ public class CardButtonFactory {
 				result = s.startsWith("+4") ? createWildDraw4Card() : createWildCard();
 				if (c.getColor() != null)
 					result.setColor(c.getColor());
-				return result;
 			}
 		}
-		return null;
+		return result;
 	}
 
 }

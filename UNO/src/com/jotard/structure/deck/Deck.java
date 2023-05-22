@@ -7,15 +7,15 @@ import java.util.Stack;
 import com.jotard.structure.card.Card;
 import com.jotard.structure.card.CardFactory;
 import com.jotard.structure.game.Game;
-import com.jotard.structure.game.GameManager;
+import com.jotard.structure.game.GameModel;
 import com.jotard.structure.player.PlayerManager;
 
 public class Deck {
 	
 	private Stack<Card> cardList;
-	private GameManager gameManager;
+	private GameModel gameManager;
 	
-	public Deck(GameManager game) {
+	public Deck(GameModel game) {
 		this.cardList = new Stack<>();
 		this.gameManager = game;
 	}

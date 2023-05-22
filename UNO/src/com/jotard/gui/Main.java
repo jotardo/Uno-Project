@@ -1,44 +1,26 @@
 package com.jotard.gui;
 
-import java.awt.Dialog.ModalExclusionType;
-import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Enumeration;
 
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import javax.swing.Timer;
-import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.Border;
-import javax.swing.plaf.metal.MetalButtonUI;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
-import javax.swing.plaf.synth.SynthButtonUI;
 
 import com.jotard.controller.GameController;
-import com.jotard.controller.IController;
 import com.jotard.image.ImageManager;
 
 public class Main extends JFrame implements ActionListener {
@@ -47,9 +29,8 @@ public class Main extends JFrame implements ActionListener {
 	private static final int SCREEN_WIDTH = 1000;
 	private static final int SCREEN_HEIGHT = 640;
 	private JButton button1, button4;
-	private IController controller;
 
-	public Main(IController controller) {
+	public Main() {
 		super("UNO!");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		getContentPane().setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
@@ -57,7 +38,6 @@ public class Main extends JFrame implements ActionListener {
 		setLocationRelativeTo(null);
 		createMenu();
 		setVisible(true);
-		this.controller = controller;
 	}
 
 	private void createMenu() {
@@ -115,7 +95,7 @@ public class Main extends JFrame implements ActionListener {
 			System.exit(0);
 		if (e.getSource() == button1) {
 			this.dispose();
-			controller.createGame();
+			GameController.createGame();
 		}
 	}
 
@@ -126,7 +106,7 @@ public class Main extends JFrame implements ActionListener {
 			UIManager.setLookAndFeel(new NimbusLookAndFeel());
 			UIManager.getLookAndFeelDefaults().forEach((k, v) -> {
 				if (k.toString().matches("\\w+.font")) {
-					UIManager.getLookAndFeelDefaults().put(k, f.deriveFont(26f));
+					UIManager.getLookAndFeelDefaults().put(k, f.deriveFont(20f));
 				}
 			});
 		} catch (FontFormatException | IOException | UnsupportedLookAndFeelException e) {

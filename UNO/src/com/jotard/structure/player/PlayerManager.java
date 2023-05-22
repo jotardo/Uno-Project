@@ -10,7 +10,6 @@ public interface PlayerManager {
 	//status
 	public boolean hasWon();
 	public String getPlayerName();
-	public boolean isCPU();
 	public List<Card> getPlayerHand();
 	//action
 	public void setBanned(boolean state);

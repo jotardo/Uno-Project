@@ -1,6 +1,6 @@
 package com.jotard.structure.card;
 
-import com.jotard.structure.game.GameManager;
+import com.jotard.structure.game.GameModel;
 
 public class ActionCard implements Card {
 	public static final int DRAW_TWO = 0;
@@ -43,7 +43,7 @@ public class ActionCard implements Card {
 	}
 
 	@Override
-	public void play(GameManager gm) {
+	public void play(GameModel gm) {
 		switch (this.functionType) {
 		case DRAW_TWO:
 			gm.getNextPlayer().setDrawWhenTurnStart(2);

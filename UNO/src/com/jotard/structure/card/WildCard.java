@@ -1,6 +1,6 @@
 package com.jotard.structure.card;
 
-import com.jotard.structure.game.GameManager;
+import com.jotard.structure.game.GameModel;
 
 public class WildCard implements Card {
 
@@ -27,7 +27,7 @@ public class WildCard implements Card {
 	}
 
 	@Override
-	public void play(GameManager gm) {
+	public void play(GameModel gm) {
 		String value = "";
 		System.out.print("Choose color: ");
 		while (!(value.equals(Card.RED) || value.equals(Card.GREEN) || value.equals(Card.BLUE) || value.equals(Card.YELLOW))) {

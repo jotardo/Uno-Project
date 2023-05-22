@@ -4,46 +4,40 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import com.jotard.controller.Subscriber;
 import com.jotard.structure.card.Card;
 import com.jotard.structure.deck.Deck;
 import com.jotard.structure.player.CPUPlayer;
 import com.jotard.structure.player.HumanPlayer;
 import com.jotard.structure.player.PlayerManager;
 
-public class Game implements GameManager{
+public class Game implements GameModel{
 	
-	private List<Subscriber> subscribers;
 	private Deck deck;
 	private Card lastPlayedCard;
 	private boolean isPlaying;
 	private List<PlayerManager> playerList;
 	private boolean normalOrder;
-	private Scanner scanner;
 	private int currentPlayerIndex;
 
 	public Game(int numPlayers) {
 		super();
-		this.subscribers = new ArrayList<>();
 		this.deck = new Deck(this);
 		this.isPlaying = false;
 		this.normalOrder = true;
-		scanner = new Scanner(System.in);
 		this.playerList = new ArrayList<>();
-		this.playerList.add(new HumanPlayer("You", this));
-		for (int i = 0; i < numPlayers; i++)
-			this.playerList.add(new CPUPlayer("Player " + i+1, this));
+		this.addPlayer(new HumanPlayer("You", this));
+		for (int i = 1; i < numPlayers; i++)
+			this.addPlayer(new CPUPlayer("Player " + (i+1), this));
 	}
 	
 	public void startGame() {
 		currentPlayerIndex = 0;
 		deck.generateDeck();
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i < 7; i++)
 			for (int j = 0; j < playerList.size(); j++)
 				deck.drawCard(this.playerList.get(j));
 		isPlaying = true;
 		deck.pickFirstCard(this);
-		updateGame();
 	}
 	
 	public PlayerManager getCurrentPlayer() {
@@ -56,19 +50,6 @@ public class Game implements GameManager{
 			this.currentPlayerIndex = this.playerList.size() - 1;
 		if (this.currentPlayerIndex > this.playerList.size() - 1)
 			this.currentPlayerIndex = 0;
-	}
-	
-	private void updateGame() {
-		PlayerManager p = null;
-		while (isPlaying) {
-			p = getCurrentPlayer();
-			p.takeTurn();
-			if (p.hasWon()) {
-				break;
-			}
-			advanceToNextPlayer();
-		}
-		System.out.println(p + " wins");
 	}
 
 	public void setLastPlayedCard(Card card) {
@@ -109,26 +90,6 @@ public class Game implements GameManager{
 	@Override
 	public void reverseTurn() {
 		this.normalOrder = !this.normalOrder;
-	}
-
-	@Override
-	public Scanner getInput() {
-		return scanner;
-	}
-
-	@Override
-	public void addSubscriber(Subscriber s) {
-		this.subscribers.add(s);
-	}
-
-	@Override
-	public void removeSubscriber(Subscriber s) {
-		this.subscribers.remove(s);
-	}
-
-	@Override
-	public void notifySubscribers() {
-		subscribers.forEach((subscriber) -> {subscriber.notifyFromModelPublisher();});
 	}
 
 	@Override

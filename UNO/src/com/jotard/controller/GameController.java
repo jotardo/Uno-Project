@@ -9,15 +9,13 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
-import com.jotard.gui.GameBoard;
+import com.jotard.gui.GameView;
 import com.jotard.gui.Main;
 import com.jotard.image.ImageManager;
 import com.jotard.structure.game.Game;
-import com.jotard.structure.game.GameManager;
+import com.jotard.structure.game.GameModel;
 
-public class GameController implements IController, Runnable, Subscriber{
-	private GameManager model;
-	private GameBoard view;
+public class GameController implements Runnable {
 	
 	public GameController() throws IOException {
 		updateGUI();
@@ -58,21 +56,14 @@ public class GameController implements IController, Runnable, Subscriber{
 
 	@Override
 	public void run() {
-		new Main(this).makeEvents();
+		new Main().makeEvents();
 	}
 
-	@Override
-	public void createGame() {
-		this.model = new Game(4);
-		this.model.addSubscriber(this);
-		this.view = new GameBoard();
-		this.view.drawLastPlayedCard(this.model.getLastPlayedCard());
-		this.view.drawPlayers(this.model.getPlayersList());
-	}
-
-	@Override
-	public void notifyFromModelPublisher() {
-		
+	public static void createGame() {
+		GameModel model = new Game(10);
+		GameModelAdapter modelAdapter = new GameBoardAdapter(model);
+		GameView board = new GameView(modelAdapter);
+		board.setVisible(true);
 	}
 	
 }
