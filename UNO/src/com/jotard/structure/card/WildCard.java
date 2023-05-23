@@ -28,15 +28,6 @@ public class WildCard implements Card {
 
 	@Override
 	public void play(GameModel gm) {
-		String value = "";
-		System.out.print("Choose color: ");
-		while (!(value.equals(Card.RED) || value.equals(Card.GREEN) || value.equals(Card.BLUE) || value.equals(Card.YELLOW))) {
-			value = gm.getInput().nextLine();
-			if (!(value.equals(Card.RED) || value.equals(Card.GREEN) || value.equals(Card.BLUE) || value.equals(Card.YELLOW))) {
-				System.out.print("Incorrect input. Choose color: ");
-			}
-		}
-		this.color = value;
 		if (this.drawFour) {
 			gm.getNextPlayer().setDrawWhenTurnStart(4);
 			gm.getNextPlayer().setBanned(true);

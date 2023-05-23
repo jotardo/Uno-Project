@@ -16,6 +16,7 @@ public class HumanPlayer implements PlayerManager {
 	private GameModel gameManager;
 
 	private boolean isBanned;
+	private boolean isTakingTurn;
 	private int startDraw;
 
 	public HumanPlayer(String name, GameModel gm) {
@@ -24,6 +25,7 @@ public class HumanPlayer implements PlayerManager {
 		this.isBanned = false;
 		this.gameManager = gm;
 		this.startDraw = 0;
+		this.isTakingTurn = false;
 	}
 
 	@Override
@@ -49,6 +51,7 @@ public class HumanPlayer implements PlayerManager {
 
 	@Override
 	public void takeTurn() {
+		this.isTakingTurn = true;
 		if (this.startDraw > 0) {
 			drawCard(startDraw);
 			this.startDraw = 0;
@@ -56,7 +59,7 @@ public class HumanPlayer implements PlayerManager {
 		if (this.isBanned) {
 			System.out.println(name + "'s banned!");
 			this.isBanned = false;
-			return;
+			endTurn();
 		}
 	}
 
@@ -88,9 +91,9 @@ public class HumanPlayer implements PlayerManager {
 		this.cardHand.remove(pop);
 	}
 	
-	private void playCard(Card c) {
-		c.play(this.gameManager);
-		removeCardFromHand(c);
+	public void playCard(int cardIndex) {
+		this.cardHand.get(cardIndex).play(this.gameManager);
+		removeCardFromHand(this.cardHand.get(cardIndex));
 	}
 
 	@Override
@@ -120,6 +123,16 @@ public class HumanPlayer implements PlayerManager {
 	@Override
 	public List<Card> getPlayerHand() {
 		return this.cardHand;
+	}
+
+	@Override
+	public void endTurn() {
+		this.isTakingTurn = false;
+	}
+
+	@Override
+	public boolean isTakingTurn() {
+		return isTakingTurn;
 	}
 
 }

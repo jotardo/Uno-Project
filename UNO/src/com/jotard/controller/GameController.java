@@ -1,7 +1,6 @@
 package com.jotard.controller;
 
 import java.awt.Font;
-import java.awt.FontFormatException;
 import java.io.IOException;
 
 import javax.swing.SwingUtilities;
@@ -15,55 +14,24 @@ import com.jotard.image.ImageManager;
 import com.jotard.structure.game.Game;
 import com.jotard.structure.game.GameModel;
 
-public class GameController implements Runnable {
+public class GameController {
 	
-	public GameController() throws IOException {
-		updateGUI();
-		loadAndCacheImages();
-	}
-
-	private void updateGUI() {
-		Font f;
-		try {
-//			f = Font.createFont(Font.TRUETYPE_FONT, Main.class.getResourceAsStream("/font/Stroud-anB5.ttf"));
-			UIManager.setLookAndFeel(new NimbusLookAndFeel());
-			UIManager.getLookAndFeelDefaults().forEach((k, v) -> {
-				if (k.toString().matches("\\w+.font")) {
-					UIManager.getLookAndFeelDefaults().put(k, UIManager.getLookAndFeelDefaults().getFont(k).deriveFont(26f));
-				}
-			});
-		} catch (UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
-		}
-	}
-
-	private void loadAndCacheImages() throws IOException {
-		String[] color = { "Blue", "Green", "Red", "Yellow" };
-		String[] number = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "Draw", "Reverse", "Skip", "Wild", "Wild_Draw" };
-		ImageManager iManager = ImageManager.getInstance();
-		iManager.loadAndCacheImage("/image/Wild.png");
-		iManager.loadAndCacheImage("/image/Wild_Draw.png");
-		iManager.loadAndCacheImage("/image/Deck.png");
-		iManager.loadAndCacheImage("/image/Uno Logo.png");
-		for (String c : color)
-			for (String n : number)
-				iManager.loadAndCacheImage("/image/" + c + "_" + n + ".png");
-	}
+	private GameModelAdapter gameModelAdapter;
+	private GameViewAdapter gameViewAdapter;
 	
-	public static void main(String[] args) throws IOException {
-		SwingUtilities.invokeLater(new GameController());
-	}
-
-	@Override
-	public void run() {
-		new Main().makeEvents();
-	}
-
-	public static void createGame() {
-		GameModel model = new Game(10);
-		GameModelAdapter modelAdapter = new GameBoardAdapter(model);
-		GameView board = new GameView(modelAdapter);
+	public GameController() {
+		GameModel model = new Game(4);
+		GameView board = new GameView(this);
+		gameModelAdapter = new GameModelAdapter(model);
+		gameViewAdapter = new GameViewAdapter(board);
+		gameModelAdapter.addObservable(gameViewAdapter);
+		board.drawPlayers(model.getPlayersList());
 		board.setVisible(true);
+		gameModelAdapter.startGame();
+	}
+
+	public void playCard(int playerIndex, int cardIndex) {
+		gameModelAdapter.playCard(playerIndex, cardIndex);
 	}
 	
 }

@@ -49,7 +49,10 @@ public class Deck {
 				return 1;
 			}
 		};
-		this.cardList.sort(randomSort);
+		do {
+			this.cardList.sort(randomSort);
+		}
+		while (this.cardList.peek().toString().startsWith("Wild"));
 		this.gameManager.notifyDeck();
 	}
 	

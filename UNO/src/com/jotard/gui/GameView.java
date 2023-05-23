@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -18,21 +19,22 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import com.jotard.controller.GameModelAdapter;
+import com.jotard.controller.GameController;
 import com.jotard.gui.card.CardButton;
 import com.jotard.gui.card.CardButtonFactory;
 import com.jotard.image.ImageManager;
 import com.jotard.structure.card.Card;
 import com.jotard.structure.player.PlayerManager;
 
-public class GameView extends JFrame {
+public class GameView extends JFrame implements GameViewInterface{
 	
 	private static final long serialVersionUID = 1L;
 	private JLabel lastPlayedCardGraphic;
-	private GameModelAdapter modelAdapter;
 	private Box leftPanel, rightPanel, upPanel, downPanel;
+	private GameController gameController;
+	private List<PlayerUI> uiList;
 	
-	public GameView(GameModelAdapter modelAdapter) {
+	public GameView(GameController gameController) {
 		setSize(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().width, GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height);
 		setResizable(false);
 		setLayout(new BorderLayout());
@@ -46,11 +48,8 @@ public class GameView extends JFrame {
 		add(downPanel = new Box(BoxLayout.X_AXIS), BorderLayout.SOUTH);
 		downPanel.setPreferredSize(new Dimension(getPreferredSize().width, 200));
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		//have model work
-		this.modelAdapter = modelAdapter;
-		this.modelAdapter.startGame();
-		this.drawLastPlayedCard(this.modelAdapter.getLastPlayedCard());
-		this.drawPlayers(this.modelAdapter.getPlayersList());
+		this.gameController = gameController;
+		this.uiList = new ArrayList<>();
 	}
 
 	private void setUpCenter() {
@@ -62,13 +61,11 @@ public class GameView extends JFrame {
 		p.add(Box.createGlue());
 		p.add(lastPlayedCardGraphic = new JLabel());
 		p.add(Box.createGlue());
-		
 		add(p);
 	}
 	
 	private JButton createDrawButton() {
 		return new JButton() {
-
 			private static final long serialVersionUID = 1L;
 			private Image i = ImageManager.getInstance().getScaledImage("/image/Deck.png", 0.35d);
 			
@@ -83,7 +80,6 @@ public class GameView extends JFrame {
 				super.paintComponent(g);
 				g.drawImage(i, 0, 0, getWidth(), getHeight(), null);
 			}
-			
 		};
 	}
 
@@ -95,27 +91,47 @@ public class GameView extends JFrame {
 		}
 	}
 
-	private void drawPlayers(List<PlayerManager> playersList) {
+	public void drawPlayers(List<PlayerManager> playersList) {
+		PlayerUI ui = null;
+		
 		downPanel.add(Box.createGlue());
-		downPanel.add(new HumanPlayerUI(playersList.get(0)));
+		downPanel.add(ui = new HumanPlayerUI(0, playersList.get(0), this));
+		this.uiList.add(0, ui);
 		downPanel.add(Box.createGlue());
 		for (int i = 1; i < playersList.size(); i++) {
 			if (i == 1) {
 				rightPanel.add(Box.createGlue());
-				rightPanel.add(new CPUPlayerUI(playersList.get(i)));
+				rightPanel.add(ui = new CPUPlayerUI(i, playersList.get(i), this));
+				this.uiList.add(i, ui);
 				rightPanel.add(Box.createGlue());
 				upPanel.add(Box.createGlue());
 			}
 			else if (i == playersList.size() - 1) {
 				leftPanel.add(Box.createGlue());
-				leftPanel.add(new CPUPlayerUI(playersList.get(i)));
+				leftPanel.add(ui = new CPUPlayerUI(i, playersList.get(i), this));
+				this.uiList.add(i, ui);
 				leftPanel.add(Box.createGlue());
 			}
 			else {
-				upPanel.add(new CPUPlayerUI(playersList.get(playersList.size() - i)));
+				upPanel.add(ui = new CPUPlayerUI(playersList.size() - i, playersList.get(playersList.size() - i), this));
+				this.uiList.add(playersList.size() - i, ui);
 				upPanel.add(Box.createGlue());
 			}
 		}
 	}
+	
+	public void updateLastPlayedCard(Card lastPlayedCard) {
+		drawLastPlayedCard(lastPlayedCard);
+	}
+	
+	public void updatePlayerUI(List<PlayerManager> pmList) {
+		for (int i = 0; i < pmList.size(); i++)
+			this.uiList.get(i).updateDisplay(pmList.get(i));
+	}
 
+	@Override
+	public void playCard(int playerIndex, int cardIndex) {
+		gameController.playCard(playerIndex, cardIndex);
+	}
+	
 }

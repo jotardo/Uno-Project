@@ -11,7 +11,7 @@ import com.jotard.structure.player.HumanPlayer;
 import com.jotard.structure.player.PlayerManager;
 
 public class Game implements GameModel{
-	
+		
 	private Deck deck;
 	private Card lastPlayedCard;
 	private boolean isPlaying;
@@ -30,16 +30,37 @@ public class Game implements GameModel{
 			this.addPlayer(new CPUPlayer("Player " + (i+1), this));
 	}
 	
+	public void addPlayer(PlayerManager player) {
+		this.playerList.add(player);
+	}
+	
+	public void removePlayer(PlayerManager player) {
+		this.playerList.remove(player);
+	}
+
 	public void startGame() {
-		currentPlayerIndex = 0;
+		isPlaying = true;
 		deck.generateDeck();
+		currentPlayerIndex = 0;
 		for (int i = 0; i < 7; i++)
 			for (int j = 0; j < playerList.size(); j++)
 				deck.drawCard(this.playerList.get(j));
-		isPlaying = true;
 		deck.pickFirstCard(this);
+//		updateGame();
 	}
 	
+	public void updateGame() {
+		getCurrentPlayer().takeTurn();
+		while (getCurrentPlayer().isTakingTurn());
+		if (!getCurrentPlayer().hasWon()) {
+			advanceToNextPlayer();
+			updateGame();
+		}
+		else {
+			isPlaying = false;
+		}
+	}
+
 	public PlayerManager getCurrentPlayer() {
 		return this.playerList.get(this.currentPlayerIndex);
 	}
@@ -54,26 +75,16 @@ public class Game implements GameModel{
 
 	public void setLastPlayedCard(Card card) {
 		this.lastPlayedCard = card;
-		notifyLastCard();
+		this.notifyLastPlayedCard();
 	}
 
-	public void addPlayer(PlayerManager s) {
-		this.playerList.add(s);
-	}
-
-	public void removePlayer(PlayerManager s) {
-		this.playerList.remove(s);
-	}
-
-	@Override
 	public void notifyDeck() {
-		for (PlayerManager pm:playerList)
+		for (PlayerManager pm: this.playerList)
 			pm.notifyDeck(this.deck);
 	}
 	
-	@Override
-	public void notifyLastCard() {
-		for (PlayerManager pm:playerList)
+	public void notifyLastPlayedCard() {
+		for (PlayerManager pm: this.playerList)
 			pm.notifyLastPlayedCard(this.lastPlayedCard);
 	}
 	
@@ -100,6 +111,16 @@ public class Game implements GameModel{
 	@Override
 	public Card getLastPlayedCard() {
 		return this.lastPlayedCard;
+	}
+	
+	@Override
+	public void playCard(int playerIndex, int cardIndex) {
+		getPlayersList().get(playerIndex).playCard(cardIndex);
+	}
+
+	@Override
+	public void takeTurn(int playerIndex) {
+		getPlayersList().get(playerIndex).takeTurn();
 	}
 	
 }

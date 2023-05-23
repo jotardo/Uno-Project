@@ -17,6 +17,7 @@ public class CPUPlayer implements PlayerManager {
 
 	private boolean isBanned;
 	private int startDraw;
+	private boolean isTakingTurn;
 
 	public CPUPlayer(String name, GameModel gm) {
 		this.name = name;
@@ -24,6 +25,7 @@ public class CPUPlayer implements PlayerManager {
 		this.isBanned = false;
 		this.gameManager = gm;
 		this.startDraw = 0;
+		this.isTakingTurn = false;
 	}
 
 	@Override
@@ -49,6 +51,7 @@ public class CPUPlayer implements PlayerManager {
 
 	@Override
 	public void takeTurn() {
+		this.isTakingTurn = true;
 		if (this.startDraw > 0) {
 			drawCard(startDraw);
 			this.startDraw = 0;
@@ -56,12 +59,8 @@ public class CPUPlayer implements PlayerManager {
 		if (this.isBanned) {
 			System.out.println(name + "'s banned!");
 			this.isBanned = false;
-			return;
+			endTurn();
 		}
-		System.out.println("Last played card : " + lastCardPlayed);
-		System.out.println(name + "'s hand = " + cardHand);
-		promptingAction(false);
-		System.out.println(name + "'s turn ended.");
 	}
 
 	private void promptingAction(boolean hasDrawnFirstCard) {
@@ -77,9 +76,9 @@ public class CPUPlayer implements PlayerManager {
 		this.cardHand.remove(pop);
 	}
 	
-	private void playCard(Card c) {
-		c.play(this.gameManager);
-		removeCardFromHand(c);
+	public void playCard(int cardIndex) {
+		this.cardHand.get(cardIndex).play(this.gameManager);
+		removeCardFromHand(this.cardHand.get(cardIndex));
 	}
 
 	@Override
@@ -113,6 +112,16 @@ public class CPUPlayer implements PlayerManager {
 	@Override
 	public List<Card> getPlayerHand() {
 		return this.cardHand;
+	}
+
+	@Override
+	public void endTurn() {
+		this.isTakingTurn = false;
+	}
+
+	@Override
+	public boolean isTakingTurn() {
+		return isTakingTurn;
 	}
 
 }
