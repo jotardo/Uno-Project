@@ -6,6 +6,7 @@ import java.awt.FontFormatException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -15,6 +16,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.Border;
@@ -83,7 +85,7 @@ public class Main extends JFrame implements ActionListener, Runnable{
 			System.exit(0);
 		if (e.getSource() == button1) {
 			this.dispose();
-			new GameController();
+				SwingUtilities.invokeLater(new GameController());
 		}
 	}
 
@@ -110,6 +112,10 @@ public class Main extends JFrame implements ActionListener, Runnable{
 		iManager.loadAndCacheImage("/image/Wild_Draw.png");
 		iManager.loadAndCacheImage("/image/Deck.png");
 		iManager.loadAndCacheImage("/image/Uno Logo.png");
+		iManager.loadAndCacheImage("/image/Arrow_Up.png");
+		iManager.loadAndCacheImage("/image/Arrow_Down.png");
+		iManager.loadAndCacheImage("/image/Arrow_Left.png");
+		iManager.loadAndCacheImage("/image/Arrow_Right.png");
 		for (String c : color)
 			for (String n : number)
 				iManager.loadAndCacheImage("/image/" + c + "_" + n + ".png");

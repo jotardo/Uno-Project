@@ -1,7 +1,6 @@
-package com.jotard.gui;
+package com.jotard.gui.game_gui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dialog.ModalityType;
 import java.awt.event.ActionEvent;
@@ -17,17 +16,20 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import com.jotard.controller.GameController;
-import com.jotard.gui.card.CardButton;
-import com.jotard.gui.card.CardButtonFactory;
+import com.jotard.gui.card_button.CardButton;
+import com.jotard.gui.card_button.CardButtonFactory;
+import com.jotard.gui.player_gui.CPUPlayerUI;
+import com.jotard.gui.player_gui.HumanPlayerUI;
+import com.jotard.gui.player_gui.PlayerUI;
 import com.jotard.image.ImageManager;
 import com.jotard.structure.card.Card;
 import com.jotard.structure.player.PlayerManager;
@@ -37,6 +39,7 @@ public class GameView extends JFrame implements GameViewInterface {
 	private static final long serialVersionUID = 1L;
 	private JLabel lastPlayedCardGraphic;
 	private Box leftPanel, rightPanel, upPanel, downPanel;
+	private OrderPanel leftOrderPanel, rightOrderPanel, upOrderPanel, downOrderPanel;
 	private GameController gameController;
 	private List<PlayerUI> uiList;
 
@@ -55,11 +58,13 @@ public class GameView extends JFrame implements GameViewInterface {
 		add(downPanel = new Box(BoxLayout.X_AXIS), BorderLayout.SOUTH);
 		downPanel.setPreferredSize(new Dimension(getPreferredSize().width, 200));
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setVisible(true);
 		this.gameController = gameController;
 		this.uiList = new ArrayList<>();
 	}
 
 	private void setUpCenter() {
+		JPanel center = new JPanel(new BorderLayout());
 		JPanel p = new JPanel();
 		p.setBorder(BorderFactory.createEtchedBorder());
 		p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
@@ -68,7 +73,12 @@ public class GameView extends JFrame implements GameViewInterface {
 		p.add(Box.createGlue());
 		p.add(lastPlayedCardGraphic = new JLabel());
 		p.add(Box.createGlue());
-		add(p);
+		center.add(p);
+		center.add(leftOrderPanel = new OrderPanel(OrderPanel.LEFT), BorderLayout.WEST);
+		center.add(rightOrderPanel = new OrderPanel(OrderPanel.RIGHT), BorderLayout.EAST);
+		center.add(upOrderPanel = new OrderPanel(OrderPanel.UP), BorderLayout.NORTH);
+		center.add(downOrderPanel = new OrderPanel(OrderPanel.DOWN), BorderLayout.SOUTH);
+		add(center);
 	}
 
 	private JLabel createDrawButton() {
@@ -110,10 +120,8 @@ public class GameView extends JFrame implements GameViewInterface {
 				rightPanel.add(ui = new CPUPlayerUI(playersList.get(i), this));
 				rightPanel.add(Box.createGlue());
 				upPanel.add(Box.createGlue());
-			} else if (i != playersList.size() - 1){
-				System.out.println(playersList.size() - i);
-				upPanel.add(ui =
-						new CPUPlayerUI(playersList.get(playersList.size() - i), this));
+			} else if (i != playersList.size() - 1) {
+				upPanel.add(ui = new CPUPlayerUI(playersList.get(playersList.size() - i), this));
 				upPanel.add(Box.createGlue());
 			} else {
 				leftPanel.add(Box.createGlue());
@@ -125,16 +133,22 @@ public class GameView extends JFrame implements GameViewInterface {
 	}
 
 	public void updateLastPlayedCard(Card lastPlayedCard) {
-		drawLastPlayedCard(lastPlayedCard);
-		revalidate();
-		repaint();
+		this.drawLastPlayedCard(lastPlayedCard);
 	}
 
 	public void updatePlayerUI(List<PlayerManager> pmList) {
 		for (int i = 0; i < pmList.size(); i++)
-			this.uiList.get(i).updateDisplay(pmList.get(i));
-		revalidate();
-		repaint();
+			if (i == 0 || i == 1 || i == pmList.size() - 1)
+				this.uiList.get(i).updateDisplay(pmList.get(i));
+			else
+				this.uiList.get(i).updateDisplay(pmList.get(pmList.size() - i));
+	}
+
+	public void updateTurnOrder(boolean normalTurn) {
+		leftOrderPanel.updateNormalOrientation(normalTurn);
+		rightOrderPanel.updateNormalOrientation(normalTurn);
+		upOrderPanel.updateNormalOrientation(normalTurn);
+		downOrderPanel.updateNormalOrientation(normalTurn);
 	}
 
 	@Override
@@ -142,7 +156,7 @@ public class GameView extends JFrame implements GameViewInterface {
 		gameController.doPlayCard(cardIndex);
 	}
 
-	public void requestShowWildPrompt() {
+	public void requestShowWildPrompt(int index) {
 		JDialog jdiag = new JDialog();
 		JPanel panel = new JPanel();
 		CardButton red = CardButtonFactory.getInstance().createColoredWildCard(CardButton.RED);
@@ -158,13 +172,13 @@ public class GameView extends JFrame implements GameViewInterface {
 			public void actionPerformed(ActionEvent e) {
 				jdiag.dispose();
 				if (e.getSource() == red)
-					gameController.doActivateWild(CardButton.RED);
+					gameController.doActivateWild(CardButton.RED, index);
 				else if (e.getSource() == green)
-					gameController.doActivateWild(CardButton.GREEN);
+					gameController.doActivateWild(CardButton.GREEN, index);
 				else if (e.getSource() == blue)
-					gameController.doActivateWild(CardButton.BLUE);
+					gameController.doActivateWild(CardButton.BLUE, index);
 				else if (e.getSource() == yellow)
-					gameController.doActivateWild(CardButton.YELLOW);
+					gameController.doActivateWild(CardButton.YELLOW, index);
 			}
 		};
 		red.addActionListener(ac);
@@ -181,7 +195,7 @@ public class GameView extends JFrame implements GameViewInterface {
 		jdiag.setVisible(true);
 	}
 
-	public void requestShowWildDraw4Prompt() {
+	public void requestShowWildDraw4Prompt(int index) {
 		JDialog jdiag = new JDialog();
 		JPanel panel = new JPanel();
 		CardButton red = CardButtonFactory.getInstance().createColoredWildDraw4Card(CardButton.RED);
@@ -197,13 +211,13 @@ public class GameView extends JFrame implements GameViewInterface {
 			public void actionPerformed(ActionEvent e) {
 				jdiag.dispose();
 				if (e.getSource() == red)
-					gameController.doActivateWildDraw4(CardButton.RED);
+					gameController.doActivateWildDraw4(CardButton.RED, index);
 				else if (e.getSource() == green)
-					gameController.doActivateWildDraw4(CardButton.GREEN);
+					gameController.doActivateWildDraw4(CardButton.GREEN, index);
 				else if (e.getSource() == blue)
-					gameController.doActivateWildDraw4(CardButton.BLUE);
+					gameController.doActivateWildDraw4(CardButton.BLUE, index);
 				else if (e.getSource() == yellow)
-					gameController.doActivateWildDraw4(CardButton.YELLOW);
+					gameController.doActivateWildDraw4(CardButton.YELLOW, index);
 			}
 		};
 		red.addActionListener(ac);
@@ -219,10 +233,15 @@ public class GameView extends JFrame implements GameViewInterface {
 		jdiag.setModalityType(ModalityType.APPLICATION_MODAL);
 		jdiag.setVisible(true);
 	}
-	
+
 	@Override
 	public void requestDrawCard() {
 		this.gameController.doDrawCard();
+	}
+
+	@Override
+	public void requestEndTurn() {
+		this.gameController.doEndTurn();
 	}
 
 }

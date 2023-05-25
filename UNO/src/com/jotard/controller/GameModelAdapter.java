@@ -3,7 +3,7 @@ package com.jotard.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.AuthenticationException;
+import javax.swing.SwingUtilities;
 
 import com.jotard.structure.card.Card;
 import com.jotard.structure.game.GameModel;
@@ -32,7 +32,7 @@ public class GameModelAdapter implements GameModel, GameModelObserver {
 	@Override
 	public void requestUpdateView() {
 		for (GameViewUpdater gmo : this.observees)
-			gmo.receiveViewUpdate(this.getPlayersList(), this.getLastPlayedCard());
+			gmo.receiveViewUpdate(this.getPlayersList(), this.getLastPlayedCard(), this.isNormalOrder());
 	}
 
 	public void startGame() {
@@ -43,14 +43,12 @@ public class GameModelAdapter implements GameModel, GameModelObserver {
 	public void takeCurrentPlayerTurn() {
 		this.model.takeCurrentPlayerTurn();
 		this.requestUpdateView();
-		this.promptCurrentPlayerAction();
 	}
 
 	public void endCurrentPlayerTurn() {
 		this.model.endCurrentPlayerTurn();
 		this.requestUpdateView();
 		this.advanceToNextPlayer();
-		this.takeCurrentPlayerTurn();
 	}
 	
 	public void advanceToNextPlayer() {
@@ -65,6 +63,7 @@ public class GameModelAdapter implements GameModel, GameModelObserver {
 	@Override
 	public void setLastPlayedCard(Card card) {
 		this.model.setLastPlayedCard(card);
+		this.requestUpdateView();
 	}
 
 	@Override
@@ -80,6 +79,7 @@ public class GameModelAdapter implements GameModel, GameModelObserver {
 	@Override
 	public void reverseTurn() {
 		this.model.reverseTurn();
+		this.requestUpdateView();
 	}
 
 	@Override
@@ -93,14 +93,14 @@ public class GameModelAdapter implements GameModel, GameModelObserver {
 	}
 
 	@Override
-	public void humanPlayCard(int cardIndex) {
-		this.model.humanPlayCard(cardIndex);
+	public void getCurrentPlayerPlayCard(int cardIndex) {
+		this.model.getCurrentPlayerPlayCard(cardIndex);
 		this.requestUpdateView();
 	}
 
 	@Override
-	public void humanDrawCard() {
-		this.model.humanDrawCard();
+	public void getCurrentPlayerDrawCard() {
+		this.model.getCurrentPlayerDrawCard();
 		this.requestUpdateView();
 	}
 
@@ -108,6 +108,21 @@ public class GameModelAdapter implements GameModel, GameModelObserver {
 	public void promptCurrentPlayerAction() {
 		this.model.promptCurrentPlayerAction();
 		this.requestUpdateView();
+	}
+
+	@Override
+	public boolean isNormalOrder() {
+		return this.model.isNormalOrder();
+	}
+
+	@Override
+	public boolean isPlaying() {
+		return this.model.isPlaying();
+	}
+
+	@Override
+	public void endGame() {
+		this.model.endGame();
 	}
 
 }

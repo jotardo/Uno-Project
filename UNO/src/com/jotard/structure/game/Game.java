@@ -52,7 +52,6 @@ public class Game implements GameModel, GameNotifier{
 			for (int j = 0; j < playerList.size(); j++)
 				deck.drawCard(this.playerList.get(j));
 		deck.pickFirstCard(this);
-		takeCurrentPlayerTurn();
 	}
 
 	public PlayerManager getCurrentPlayer() {
@@ -92,6 +91,10 @@ public class Game implements GameModel, GameNotifier{
 		return this.playerList.get(index);
 	}
 	
+	public boolean isNormalOrder() {
+		return this.normalOrder;
+	}
+	
 	@Override
 	public void reverseTurn() {
 		this.normalOrder = !this.normalOrder;
@@ -108,7 +111,7 @@ public class Game implements GameModel, GameNotifier{
 	}
 	
 	@Override
-	public void humanPlayCard(int cardIndex) {
+	public void getCurrentPlayerPlayCard(int cardIndex) {
 		getCurrentPlayer().playCard(cardIndex);
 	}
 
@@ -123,13 +126,21 @@ public class Game implements GameModel, GameNotifier{
 	}
 
 	@Override
-	public void humanDrawCard() {
+	public void getCurrentPlayerDrawCard() {
 		getCurrentPlayer().drawCard();
 	}
 
 	@Override
 	public void promptCurrentPlayerAction() {
 		getCurrentPlayer().promptingAction(false);
+	}
+	
+	public boolean isPlaying() {
+		return isPlaying;
+	}
+	
+	public void endGame() {
+		this.isPlaying = false;
 	}
 	
 }

@@ -2,7 +2,7 @@ package com.jotard.controller;
 
 import java.util.List;
 
-import com.jotard.gui.GameViewInterface;
+import com.jotard.gui.game_gui.GameViewInterface;
 import com.jotard.structure.card.Card;
 import com.jotard.structure.player.PlayerManager;
 
@@ -15,9 +15,10 @@ public class GameViewAdapter implements GameViewInterface, GameViewUpdater {
 	}
 
 	@Override
-	public void receiveViewUpdate(List<PlayerManager> pList, Card lastPlayedCard) {
+	public void receiveViewUpdate(List<PlayerManager> pList, Card lastPlayedCard, boolean normalOrder) {
 		this.updateLastPlayedCard(lastPlayedCard);
 		this.updatePlayerUI(pList);
+		this.updateTurnOrder(normalOrder);
 	}
 
 	public void drawPlayers(List<PlayerManager> playersList) {
@@ -40,18 +41,28 @@ public class GameViewAdapter implements GameViewInterface, GameViewUpdater {
 	}
 
 	@Override
-	public void requestShowWildPrompt() {
-		this.view.requestShowWildPrompt();
+	public void requestShowWildPrompt(int index) {
+		this.view.requestShowWildPrompt(index);
 	}
 
 	@Override
-	public void requestShowWildDraw4Prompt() {
-		this.view.requestShowWildDraw4Prompt();
+	public void requestShowWildDraw4Prompt(int index) {
+		this.view.requestShowWildDraw4Prompt(index);
 	}
 
 	@Override
 	public void requestDrawCard() {
 		this.view.requestDrawCard();
+	}
+
+	@Override
+	public void updateTurnOrder(boolean normalTurn) {
+		this.view.updateTurnOrder(normalTurn);
+	}
+
+	@Override
+	public void requestEndTurn() {
+		this.view.requestEndTurn();
 	}
 	
 

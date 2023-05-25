@@ -1,4 +1,4 @@
-package com.jotard.gui.card;
+package com.jotard.gui.card_button;
 
 public class ActionCardButton extends CardButton {
 	private static final long serialVersionUID = 1L;

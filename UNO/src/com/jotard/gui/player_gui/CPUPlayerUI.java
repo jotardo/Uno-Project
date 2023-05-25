@@ -1,11 +1,9 @@
-package com.jotard.gui;
+package com.jotard.gui.player_gui;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import com.jotard.gui.card.CardButton;
-import com.jotard.gui.card.CardButtonFactory;
-import com.jotard.gui.card.WildCardButton;
+import com.jotard.gui.game_gui.GameViewInterface;
 import com.jotard.image.ImageManager;
 import com.jotard.structure.card.Card;
 import com.jotard.structure.deck.Deck;
@@ -62,13 +60,12 @@ public class CPUPlayerUI extends PlayerUI{
 	}
 
 	@Override
-	protected void updateDisplay(PlayerManager playerManager) {
+	public void updateDisplay(PlayerManager playerManager) {
 		if (playerManager.isTakingTurn())
 			setBorder(BorderFactory.createLineBorder(Color.RED));
 		else
 			setBorder(BorderFactory.createEmptyBorder());
 		this.handSize = String.format("%02d", playerManager.getPlayerHand().size());
-		revalidate();
 		repaint();
 	}
 

@@ -1,4 +1,4 @@
-package com.jotard.gui.card;
+package com.jotard.gui.card_button;
 
 import java.awt.Color;
 import java.awt.Cursor;

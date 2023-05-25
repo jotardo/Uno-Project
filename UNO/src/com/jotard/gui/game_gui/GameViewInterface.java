@@ -1,4 +1,4 @@
-package com.jotard.gui;
+package com.jotard.gui.game_gui;
 
 import java.util.List;
 
@@ -9,10 +9,12 @@ public interface GameViewInterface {
 	
 	public void updateLastPlayedCard(Card c);
 	public void updatePlayerUI(List<PlayerManager> pmList);
+	public void updateTurnOrder(boolean normalTurn);
 	public void requestPlayCard(int cardIndex);
-	public void requestShowWildPrompt();
-	public void requestShowWildDraw4Prompt();
+	public void requestShowWildPrompt(int index);
+	public void requestShowWildDraw4Prompt(int index);
 	public void drawPlayers(List<PlayerManager> playersList);
 	public void requestDrawCard();
+	public void requestEndTurn();
 	
 }

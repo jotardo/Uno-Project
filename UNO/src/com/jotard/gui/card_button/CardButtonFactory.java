@@ -1,4 +1,4 @@
-package com.jotard.gui.card;
+package com.jotard.gui.card_button;
 
 import com.jotard.structure.card.Card;
 
@@ -66,10 +66,9 @@ public class CardButtonFactory {
 			}
 			if (s.startsWith("Wild:")) {
 				s = s.substring(5);
-				sArr = s.split("-");
-				if (s.startsWith("+4"))
-					result = c.getColor() != null ? createColoredWildDraw4Card(c.getColor()) : createNormalWildCard();
-				else
+				if (s.startsWith(" +4")) {
+					result = c.getColor() != null ? createColoredWildDraw4Card(c.getColor()) : createNormalWildDraw4Card();
+				} else
 					result = c.getColor() != null ? createColoredWildCard(c.getColor()) : createNormalWildCard();
 			}
 		}

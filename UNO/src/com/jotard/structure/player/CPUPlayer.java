@@ -73,13 +73,13 @@ public class CPUPlayer implements PlayerManager {
 		for (int i = 0; i < this.cardHand.size(); i++) {
 			card = this.cardHand.get(i);
 			if (card.getColor() == null || card.getColor().equals(this.lastCardPlayed.getColor())
-					|| card.getNumber() == this.lastCardPlayed.getNumber()) {
+					|| (card.getNumber() != -1 && card.getNumber() == this.lastCardPlayed.getNumber())) {
 				playableCard.add(i);
 			}
 		}
 		if (playableCard.isEmpty()) {
 			if (!hasDrawnFirstCard) {
-				drawCard();
+				this.gameManager.getCurrentPlayerDrawCard();
 				promptingAction(true);
 			}
 			else {
@@ -87,16 +87,7 @@ public class CPUPlayer implements PlayerManager {
 			}
 		}
 		else {
-			int i = 0;
-			while (i < playableCard.size()) {
-				card = this.cardHand.get(playableCard.get(i));
-				if (card.getColor() == null || card.getColor().equals(this.lastCardPlayed.getColor())
-						|| card.getNumber() == this.lastCardPlayed.getNumber()) {
-					this.playCard(playableCard.get(i));
-					break;
-				}
-				i++;
-			}
+			this.gameManager.getCurrentPlayerPlayCard(playableCard.get(0));
 		}
 	}
 

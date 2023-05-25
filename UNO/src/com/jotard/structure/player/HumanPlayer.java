@@ -63,6 +63,7 @@ public class HumanPlayer implements PlayerManager {
 			this.isBanned = false;
 			this.gameManager.endCurrentPlayerTurn();
 		}
+		System.out.println(this.cardHand);
 	}
 
 	public void promptingAction(boolean hasDrawnFirstCard) {}
@@ -94,7 +95,7 @@ public class HumanPlayer implements PlayerManager {
 	public void playCard(int cardIndex) {
 		Card card = this.cardHand.get(cardIndex);
 		if (card.getColor() == null || card.getColor().equals(this.lastCardPlayed.getColor())
-				|| card.getNumber() == this.lastCardPlayed.getNumber()) {
+				|| (card.getNumber() != -1 && card.getNumber() == this.lastCardPlayed.getNumber())) {
 			System.out.println(name + ":: played " + this.cardHand.get(cardIndex));
 			card.play(this.gameManager);
 			removeCardFromHand(card);
