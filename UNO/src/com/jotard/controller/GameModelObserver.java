@@ -1,7 +1,7 @@
 package com.jotard.controller;
 
 public interface GameModelObserver {
-	public void addObservable(GameModelObservable o);
-	public void removeObservable(GameModelObservable o);
-	public void notifyBoardDraw();
+	public void addViewUpdater(GameViewUpdater o);
+	public void removeViewUpdate(GameViewUpdater o);
+	public void requestUpdateView();
 }

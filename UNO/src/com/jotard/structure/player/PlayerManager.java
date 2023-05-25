@@ -25,4 +25,5 @@ public interface PlayerManager {
 	public void notifyDeck(Deck deck);
 	public void notifyLastPlayedCard(Card previousCard);
 	public void playCard(int cardIndex);
+	public void promptingAction(boolean hasDrawnFirstCard);
 }

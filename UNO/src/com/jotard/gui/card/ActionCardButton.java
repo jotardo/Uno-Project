@@ -1,6 +1,7 @@
 package com.jotard.gui.card;
 
 public class ActionCardButton extends CardButton {
+	private static final long serialVersionUID = 1L;
 	public static final int DRAW_TWO = 0;
 	public static final int REVERSE = 1;
 	public static final int BAN = 2;
@@ -35,18 +36,6 @@ public class ActionCardButton extends CardButton {
 	@Override
 	public int getNumber() {
 		return -1;
-	}
-
-	@Override
-	public void play() {
-		switch (this.functionType) {
-		case DRAW_TWO:
-			break;
-		case REVERSE:
-			break;
-		case BAN:
-		default:
-		}
 	}
 	
 	private static String convertFunctionType(int functionType) {

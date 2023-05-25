@@ -8,21 +8,22 @@ import com.jotard.structure.card.Card;
 import com.jotard.structure.card.CardFactory;
 import com.jotard.structure.game.Game;
 import com.jotard.structure.game.GameModel;
+import com.jotard.structure.game.GameNotifier;
 import com.jotard.structure.player.PlayerManager;
 
 public class Deck {
 	
 	private Stack<Card> cardList;
-	private GameModel gameManager;
+	private GameNotifier gameManager;
 	
-	public Deck(GameModel game) {
+	public Deck(GameNotifier game) {
 		this.cardList = new Stack<>();
 		this.gameManager = game;
 	}
 	
 	public void generateDeck() {
 		String[] color = {Card.RED, Card.GREEN, Card.BLUE, Card.YELLOW};
-		CardFactory cf = new CardFactory();
+		CardFactory cf = CardFactory.getInstance();
 		for (String c: color) {
 			this.cardList.add(cf.createNormalCard(c, 0));
 			for (int i = 1; i <= 9; i++) {
@@ -38,25 +39,21 @@ public class Deck {
 			this.cardList.add(cf.createWildCard());
 			this.cardList.add(cf.createWildDraw4Card());
 		}
-		Comparator<Card> randomSort = new Comparator<Card>() {
-			
-			Random r = new Random();
-			
+		this.cardList.sort(new Comparator<Card>() {
 			@Override
 			public int compare(Card o1, Card o2) {
-				if (r.nextBoolean())
+				if (Math.random() < 0.5)
 					return -1;
 				return 1;
 			}
-		};
-		do {
-			this.cardList.sort(randomSort);
-		}
-		while (this.cardList.peek().toString().startsWith("Wild"));
+		});
 		this.gameManager.notifyDeck();
 	}
 	
 	public void pickFirstCard(Game g) {
+		while (this.cardList.peek().toString().startsWith("Wild")) {
+			this.cardList.add(this.cardList.pop());
+		}
 		g.setLastPlayedCard(this.cardList.pop());
 		this.gameManager.notifyDeck();
 	}

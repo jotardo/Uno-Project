@@ -27,5 +27,6 @@ public class NormalCard implements Card{
 	@Override
 	public void play(GameModel gm) {
 		gm.setLastPlayedCard(this);
+		gm.endCurrentPlayerTurn();
 	}
 }

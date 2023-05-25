@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jotard.structure.card.Card;
+import com.jotard.structure.card.CardFactory;
+import com.jotard.structure.card.WildCard;
 import com.jotard.structure.deck.Deck;
 import com.jotard.structure.game.GameModel;
 
@@ -41,11 +43,13 @@ public class CPUPlayer implements PlayerManager {
 
 	@Override
 	public void drawCard() {
+		System.out.println(name + ":: draw card!");
 		deck.drawCard(this);
 	}
 
 	@Override
 	public void drawCard(int number) {
+		System.out.println(name + ":: draw "+ number + " card!");
 		deck.drawCard(this, number);
 	}
 
@@ -57,13 +61,43 @@ public class CPUPlayer implements PlayerManager {
 			this.startDraw = 0;
 		}
 		if (this.isBanned) {
-			System.out.println(name + "'s banned!");
+			System.out.println(name + ":: currently banned!");
 			this.isBanned = false;
-			endTurn();
+			this.gameManager.endCurrentPlayerTurn();
 		}
 	}
 
-	private void promptingAction(boolean hasDrawnFirstCard) {
+	public void promptingAction(boolean hasDrawnFirstCard) {
+		List<Integer> playableCard = new ArrayList<>();
+		Card card = null;
+		for (int i = 0; i < this.cardHand.size(); i++) {
+			card = this.cardHand.get(i);
+			if (card.getColor() == null || card.getColor().equals(this.lastCardPlayed.getColor())
+					|| card.getNumber() == this.lastCardPlayed.getNumber()) {
+				playableCard.add(i);
+			}
+		}
+		if (playableCard.isEmpty()) {
+			if (!hasDrawnFirstCard) {
+				drawCard();
+				promptingAction(true);
+			}
+			else {
+				this.gameManager.endCurrentPlayerTurn();
+			}
+		}
+		else {
+			int i = 0;
+			while (i < playableCard.size()) {
+				card = this.cardHand.get(playableCard.get(i));
+				if (card.getColor() == null || card.getColor().equals(this.lastCardPlayed.getColor())
+						|| card.getNumber() == this.lastCardPlayed.getNumber()) {
+					this.playCard(playableCard.get(i));
+					break;
+				}
+				i++;
+			}
+		}
 	}
 
 	@Override
@@ -77,8 +111,27 @@ public class CPUPlayer implements PlayerManager {
 	}
 	
 	public void playCard(int cardIndex) {
-		this.cardHand.get(cardIndex).play(this.gameManager);
-		removeCardFromHand(this.cardHand.get(cardIndex));
+		String[] colors = {Card.RED, Card.GREEN, Card.BLUE, Card.YELLOW};
+		String chosenColor = colors[(int) (Math.random() * 4)];
+		Card card = null;
+		if (this.cardHand.get(cardIndex).toString().startsWith("Wild")) {
+			if (this.cardHand.get(cardIndex).toString().startsWith("Wild: +4")) {
+				card = CardFactory.getInstance().createColoredWildDraw4Card(chosenColor);
+			}
+			else {
+				card = CardFactory.getInstance().createColoredWildCard(chosenColor);
+			}
+			System.out.println(name + ":: played " + this.cardHand.get(cardIndex) + " = " + chosenColor);
+			removeCardFromHand(this.cardHand.get(cardIndex));
+			card.play(gameManager);
+			this.gameManager.endCurrentPlayerTurn();
+		}
+		else {
+			System.out.println(name + ":: played " + this.cardHand.get(cardIndex));
+			card = this.cardHand.get(cardIndex);
+			removeCardFromHand(card);
+			card.play(this.gameManager);
+		}
 	}
 
 	@Override

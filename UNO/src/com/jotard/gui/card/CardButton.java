@@ -9,10 +9,10 @@ import java.awt.Image;
 import javax.swing.JButton;
 
 import com.jotard.image.ImageManager;
-import com.jotard.structure.game.GameModel;
 
 public abstract class CardButton extends JButton{
 	
+	private static final long serialVersionUID = 1L;
 	public static final String RED = "Red";
 	public static final String GREEN = "Green";
 	public static final String BLUE = "Blue";
@@ -53,10 +53,5 @@ public abstract class CardButton extends JButton{
 		return color;
 	}
 	
-	public void setColor(String color) {
-		this.color = color;
-	}
-	
 	public abstract int getNumber();
-	public abstract void play();
 }

@@ -94,7 +94,7 @@ public class Main extends JFrame implements ActionListener, Runnable{
 			UIManager.setLookAndFeel(new NimbusLookAndFeel());
 			UIManager.getLookAndFeelDefaults().forEach((k, v) -> {
 				if (k.toString().matches("\\w+.font")) {
-					UIManager.getLookAndFeelDefaults().put(k, f.deriveFont(24f));
+					UIManager.getLookAndFeelDefaults().put(k, f.deriveFont(28f));
 				}
 			});
 		} catch (FontFormatException | IOException | UnsupportedLookAndFeelException e) {

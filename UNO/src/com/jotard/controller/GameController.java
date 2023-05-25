@@ -1,16 +1,8 @@
 package com.jotard.controller;
 
-import java.awt.Font;
-import java.io.IOException;
-
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.plaf.nimbus.NimbusLookAndFeel;
-
 import com.jotard.gui.GameView;
-import com.jotard.gui.Main;
-import com.jotard.image.ImageManager;
+import com.jotard.structure.card.Card;
+import com.jotard.structure.card.CardFactory;
 import com.jotard.structure.game.Game;
 import com.jotard.structure.game.GameModel;
 
@@ -20,18 +12,37 @@ public class GameController {
 	private GameViewAdapter gameViewAdapter;
 	
 	public GameController() {
-		GameModel model = new Game(4);
-		GameView board = new GameView(this);
+		GameModel model = new Game();
 		gameModelAdapter = new GameModelAdapter(model);
+		GameView board = new GameView(this);
 		gameViewAdapter = new GameViewAdapter(board);
-		gameModelAdapter.addObservable(gameViewAdapter);
-		board.drawPlayers(model.getPlayersList());
+		gameModelAdapter.addViewUpdater(gameViewAdapter);
 		board.setVisible(true);
+		gameModelAdapter.setUpPlayer(6, gameModelAdapter);
+		gameViewAdapter.drawPlayers(model.getPlayersList());
 		gameModelAdapter.startGame();
 	}
 
-	public void playCard(int playerIndex, int cardIndex) {
-		gameModelAdapter.playCard(playerIndex, cardIndex);
+	public void doPlayCard(int cardIndex) {
+		gameModelAdapter.humanPlayCard(cardIndex);
+	}
+
+	public void doDrawCard() {
+		gameModelAdapter.humanDrawCard();
+	}
+	
+	public void doActivateWild(String color) {
+		Card c = CardFactory.getInstance().createColoredWildCard(color);
+		c.play(gameModelAdapter);
+		System.out.println("You:: played " + c);
+		gameModelAdapter.endCurrentPlayerTurn();
+	}
+	
+	public void doActivateWildDraw4(String color) {
+		Card c = CardFactory.getInstance().createColoredWildDraw4Card(color);
+		c.play(gameModelAdapter);
+		System.out.println("You:: played " + c);
+		gameModelAdapter.endCurrentPlayerTurn();
 	}
 	
 }

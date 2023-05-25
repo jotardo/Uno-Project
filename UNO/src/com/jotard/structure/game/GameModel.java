@@ -3,12 +3,14 @@ package com.jotard.structure.game;
 import java.util.List;
 import java.util.Scanner;
 
+import com.jotard.controller.GameModelAdapter;
 import com.jotard.structure.card.Card;
 import com.jotard.structure.player.PlayerManager;
 
 public interface GameModel {
 	
 	//game
+	public void setUpPlayer(int playerNum, GameModel gameModel);
 	public void startGame();
 	public void setLastPlayedCard(Card card);
 	public PlayerManager getCurrentPlayer();
@@ -17,13 +19,12 @@ public interface GameModel {
 	//metadata
 	public List<PlayerManager> getPlayersList();
 	public Card getLastPlayedCard();
-	//publisher
-	public void addPlayer(PlayerManager s);
-	public void removePlayer(PlayerManager s);
-	public void notifyDeck();
-	public void notifyLastPlayedCard();
 	//???
-	public void takeTurn(int playerIndex);
-	public void playCard(int playerIndex, int cardIndex);
+	public void takeCurrentPlayerTurn();
+	public void promptCurrentPlayerAction();
+	public void endCurrentPlayerTurn();
+	public void advanceToNextPlayer();
+	public void humanPlayCard(int cardIndex);
+	public void humanDrawCard();
 	
 }

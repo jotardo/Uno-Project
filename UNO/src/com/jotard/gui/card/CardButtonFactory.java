@@ -6,6 +6,8 @@ public class CardButtonFactory {
 	
 	private static CardButtonFactory instance;
 	
+	private CardButtonFactory() {}
+	
 	public static CardButtonFactory getInstance() {
 		if (instance == null)
 			instance = new CardButtonFactory();
@@ -28,12 +30,20 @@ public class CardButtonFactory {
 		return new ActionCardButton(c, ActionCardButton.REVERSE);
 	}
 
-	public CardButton createWildCard() {
-		return new WildCardButton(false);
+	public CardButton createNormalWildCard() {
+		return new WildCardButton(false, null);
 	}
 
-	public CardButton createWildDraw4Card() {
-		return new WildCardButton(true);
+	public CardButton createNormalWildDraw4Card() {
+		return new WildCardButton(true, null);
+	}
+
+	public CardButton createColoredWildCard(String c) {
+		return new WildCardButton(false, c);
+	}
+
+	public CardButton createColoredWildDraw4Card(String c) {
+		return new WildCardButton(true, c);
 	}
 	
 	public CardButton createCard(Card c) {
@@ -57,9 +67,10 @@ public class CardButtonFactory {
 			if (s.startsWith("Wild:")) {
 				s = s.substring(5);
 				sArr = s.split("-");
-				result = s.startsWith("+4") ? createWildDraw4Card() : createWildCard();
-				if (c.getColor() != null)
-					result.setColor(c.getColor());
+				if (s.startsWith("+4"))
+					result = c.getColor() != null ? createColoredWildDraw4Card(c.getColor()) : createNormalWildCard();
+				else
+					result = c.getColor() != null ? createColoredWildCard(c.getColor()) : createNormalWildCard();
 			}
 		}
 		return result;

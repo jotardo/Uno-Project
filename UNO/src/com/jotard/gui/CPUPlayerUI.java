@@ -33,9 +33,8 @@ public class CPUPlayerUI extends PlayerUI{
 	private static final long serialVersionUID = 1L;
 	private String handSize;
 	private GameViewInterface gameView;
-	private int playerIndex;
 
-	public CPUPlayerUI(int playerIndex, PlayerManager playerManager, GameViewInterface gameView) {
+	public CPUPlayerUI(PlayerManager playerManager, GameViewInterface gameView) {
 		super();
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		add(new JLabel(playerManager.getPlayerName()));
@@ -45,7 +44,6 @@ public class CPUPlayerUI extends PlayerUI{
 		}
 		this.handSize = String.format("%02d", playerManager.getPlayerHand().size());
 		this.gameView = gameView;
-		this.playerIndex = playerIndex;
 	}
 	
 	@Override
@@ -65,6 +63,10 @@ public class CPUPlayerUI extends PlayerUI{
 
 	@Override
 	protected void updateDisplay(PlayerManager playerManager) {
+		if (playerManager.isTakingTurn())
+			setBorder(BorderFactory.createLineBorder(Color.RED));
+		else
+			setBorder(BorderFactory.createEmptyBorder());
 		this.handSize = String.format("%02d", playerManager.getPlayerHand().size());
 		revalidate();
 		repaint();

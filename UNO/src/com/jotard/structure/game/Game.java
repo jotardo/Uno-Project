@@ -10,7 +10,7 @@ import com.jotard.structure.player.CPUPlayer;
 import com.jotard.structure.player.HumanPlayer;
 import com.jotard.structure.player.PlayerManager;
 
-public class Game implements GameModel{
+public class Game implements GameModel, GameNotifier{
 		
 	private Deck deck;
 	private Card lastPlayedCard;
@@ -19,15 +19,21 @@ public class Game implements GameModel{
 	private boolean normalOrder;
 	private int currentPlayerIndex;
 
-	public Game(int numPlayers) {
+	public Game() {
 		super();
 		this.deck = new Deck(this);
 		this.isPlaying = false;
 		this.normalOrder = true;
 		this.playerList = new ArrayList<>();
-		this.addPlayer(new HumanPlayer("You", this));
+	}
+	
+	@Override
+	public void setUpPlayer(int numPlayers, GameModel gm) {
+		while (!this.playerList.isEmpty())
+			this.removePlayer(this.playerList.get(0));
+		this.addPlayer(new HumanPlayer("You", gm));
 		for (int i = 1; i < numPlayers; i++)
-			this.addPlayer(new CPUPlayer("Player " + (i+1), this));
+			this.addPlayer(new CPUPlayer("Player " + (i+1), gm));
 	}
 	
 	public void addPlayer(PlayerManager player) {
@@ -46,26 +52,14 @@ public class Game implements GameModel{
 			for (int j = 0; j < playerList.size(); j++)
 				deck.drawCard(this.playerList.get(j));
 		deck.pickFirstCard(this);
-//		updateGame();
-	}
-	
-	public void updateGame() {
-		getCurrentPlayer().takeTurn();
-		while (getCurrentPlayer().isTakingTurn());
-		if (!getCurrentPlayer().hasWon()) {
-			advanceToNextPlayer();
-			updateGame();
-		}
-		else {
-			isPlaying = false;
-		}
+		takeCurrentPlayerTurn();
 	}
 
 	public PlayerManager getCurrentPlayer() {
 		return this.playerList.get(this.currentPlayerIndex);
 	}
 
-	private void advanceToNextPlayer() {
+	public void advanceToNextPlayer() {
 		this.currentPlayerIndex += this.normalOrder ? 1 : -1;
 		if (this.currentPlayerIndex < 0)
 			this.currentPlayerIndex = this.playerList.size() - 1;
@@ -114,13 +108,28 @@ public class Game implements GameModel{
 	}
 	
 	@Override
-	public void playCard(int playerIndex, int cardIndex) {
-		getPlayersList().get(playerIndex).playCard(cardIndex);
+	public void humanPlayCard(int cardIndex) {
+		getCurrentPlayer().playCard(cardIndex);
 	}
 
 	@Override
-	public void takeTurn(int playerIndex) {
-		getPlayersList().get(playerIndex).takeTurn();
+	public void takeCurrentPlayerTurn() {
+		getCurrentPlayer().takeTurn();
+	}
+
+	@Override
+	public void endCurrentPlayerTurn() {
+		getCurrentPlayer().endTurn();
+	}
+
+	@Override
+	public void humanDrawCard() {
+		getCurrentPlayer().drawCard();
+	}
+
+	@Override
+	public void promptCurrentPlayerAction() {
+		getCurrentPlayer().promptingAction(false);
 	}
 	
 }

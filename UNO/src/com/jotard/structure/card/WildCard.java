@@ -6,9 +6,14 @@ public class WildCard implements Card {
 
 	private String color;
 	private boolean drawFour;
-
+	
 	public WildCard(boolean drawFour) {
 		this.drawFour = drawFour;
+	}
+
+	public WildCard(boolean drawFour, String color) {
+		this.drawFour = drawFour;
+		this.color = color;
 	}
 	
 	@Override

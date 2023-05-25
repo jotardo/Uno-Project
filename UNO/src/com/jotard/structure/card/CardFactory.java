@@ -1,6 +1,17 @@
 package com.jotard.structure.card;
 
+
 public class CardFactory {
+	
+	private static CardFactory instance;
+	
+	private CardFactory() {}
+	
+	public static CardFactory getInstance() {
+		if (instance == null)
+			instance = new CardFactory();
+		return instance;
+	}
 
 	public Card createNormalCard(String c, int i) {
 		return new NormalCard(c, i);
@@ -24,6 +35,14 @@ public class CardFactory {
 
 	public Card createWildDraw4Card() {
 		return new WildCard(true);
+	}
+	
+	public Card createColoredWildCard(String c) {
+		return new WildCard(false, c);
+	}
+
+	public Card createColoredWildDraw4Card(String c) {
+		return new WildCard(true, c);
 	}
 
 }

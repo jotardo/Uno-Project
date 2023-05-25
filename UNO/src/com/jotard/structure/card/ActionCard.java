@@ -44,6 +44,7 @@ public class ActionCard implements Card {
 
 	@Override
 	public void play(GameModel gm) {
+		gm.setLastPlayedCard(this);
 		switch (this.functionType) {
 		case DRAW_TWO:
 			gm.getNextPlayer().setDrawWhenTurnStart(2);
@@ -56,6 +57,6 @@ public class ActionCard implements Card {
 			gm.getNextPlayer().setBanned(true);
 		default:
 		}
-		gm.setLastPlayedCard(this);
+		gm.endCurrentPlayerTurn();
 	}
 }

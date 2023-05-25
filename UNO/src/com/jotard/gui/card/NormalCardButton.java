@@ -1,11 +1,7 @@
 package com.jotard.gui.card;
 
-import java.awt.Image;
-
-import com.jotard.image.ImageManager;
-import com.jotard.structure.game.GameModel;
-
 public class NormalCardButton extends CardButton {
+	private static final long serialVersionUID = 1L;
 	private String color;
 	private int number;
 
@@ -24,9 +20,5 @@ public class NormalCardButton extends CardButton {
 	@Override
 	public int getNumber() {
 		return number;
-	}
-
-	@Override
-	public void play() {
 	}
 }
