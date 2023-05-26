@@ -47,7 +47,7 @@ public class Game implements GameModel, GameNotifier{
 		isPlaying = true;
 		deck.generateDeck();
 		currentPlayerIndex = 0;
-		for (int i = 0; i < 30; i++)
+		for (int i = 0; i < 7; i++)
 			for (int j = 0; j < playerList.size(); j++)
 				deck.drawCard(this.playerList.get(j));
 		deck.pickFirstCard(this);

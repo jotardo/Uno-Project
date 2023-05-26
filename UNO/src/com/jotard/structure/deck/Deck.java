@@ -51,8 +51,10 @@ public class Deck {
 	
 	public void drawCard(PlayerManager player, int number) {
 		for (int i = 0; i < number; i++) {
-			if (this.cardList.isEmpty())
+			if (this.cardList.isEmpty()) {
+				//infinite deck
 				this.generateDeck();
+			}
 			player.addCardToHand(this.cardList.pop());
 		}
 		this.gameNotifier.notifyDeck();
