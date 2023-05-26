@@ -18,5 +18,7 @@ public interface GameViewInterface {
 	public void requestEndTurn();
 	public void drawEndGame(PlayerManager pm);
 	public void destroyView();
+	public void popupError(String message);
+	public void updateStatus(String message);
 	
 }

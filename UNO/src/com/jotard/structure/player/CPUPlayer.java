@@ -19,6 +19,7 @@ public class CPUPlayer implements PlayerManager {
 	private boolean isBanned;
 	private int startDraw;
 	private boolean isTakingTurn;
+	private String status;
 
 	public CPUPlayer(String name, GameModel gm) {
 		this.name = name;
@@ -27,6 +28,7 @@ public class CPUPlayer implements PlayerManager {
 		this.gameManager = gm;
 		this.startDraw = 0;
 		this.isTakingTurn = false;
+		this.status = null;
 	}
 
 	@Override
@@ -42,25 +44,30 @@ public class CPUPlayer implements PlayerManager {
 
 	@Override
 	public void drawCard() {
-		System.out.println(name + ":: draw card!");
-		deck.drawCard(this);
+		this.status += ", draw a card!";
+		this.deck.drawCard(this);
 	}
 
 	@Override
 	public void drawCard(int number) {
-		System.out.println(name + ":: draw "+ number + " card!");
-		deck.drawCard(this, number);
+		this.status += " draw "+ number + " card!";
+		this.deck.drawCard(this, number);
 	}
 
 	@Override
 	public void takeTurn() {
+		boolean hasDrawn = this.startDraw > 0;
 		this.isTakingTurn = true;
+		this.status = this.name;
 		if (this.startDraw > 0) {
-			drawCard(startDraw);
+			this.drawCard(this.startDraw);
 			this.startDraw = 0;
 		}
 		if (this.isBanned) {
-			System.out.println(name + ":: currently banned!");
+			if (hasDrawn)
+				this.status += " and";
+			this.status += " is currently banned!";
+			this.gameManager.notifyStatus(this.status);
 			this.isBanned = false;
 			this.gameManager.endCurrentPlayerTurn();
 		}
@@ -111,15 +118,17 @@ public class CPUPlayer implements PlayerManager {
 			else {
 				card = CardFactory.getInstance().createColoredWildCard(chosenColor);
 			}
-			System.out.println(name + ":: played " + this.cardHand.get(cardIndex) + " = " + chosenColor);
-			removeCardFromHand(this.cardHand.get(cardIndex));
+			this.status += ", played " + this.cardHand.get(cardIndex) + " = " + chosenColor;
+			this.gameManager.notifyStatus(this.status);
+			this.removeCardFromHand(this.cardHand.get(cardIndex));
 			card.play(gameManager);
 			this.gameManager.endCurrentPlayerTurn();
 		}
 		else {
-			System.out.println(name + ":: played " + this.cardHand.get(cardIndex));
+			this.status += ",  played " + this.cardHand.get(cardIndex);
+			this.gameManager.notifyStatus(this.status);
 			card = this.cardHand.get(cardIndex);
-			removeCardFromHand(card);
+			this.removeCardFromHand(card);
 			card.play(this.gameManager);
 		}
 		if (this.cardHand.isEmpty())

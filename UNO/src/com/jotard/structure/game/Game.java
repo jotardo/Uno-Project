@@ -47,7 +47,7 @@ public class Game implements GameModel, GameNotifier{
 		isPlaying = true;
 		deck.generateDeck();
 		currentPlayerIndex = 0;
-		for (int i = 0; i < 1; i++)
+		for (int i = 0; i < 30; i++)
 			for (int j = 0; j < playerList.size(); j++)
 				deck.drawCard(this.playerList.get(j));
 		deck.pickFirstCard(this);
@@ -140,6 +140,16 @@ public class Game implements GameModel, GameNotifier{
 	
 	public void endGame(PlayerManager pm) {
 		this.isPlaying = false;
+	}
+
+	@Override
+	public void notifyError(String message) {
+		System.err.println(message);
+	}
+
+	@Override
+	public void notifyStatus(String message) {
+		System.out.println(message);
 	}
 	
 }

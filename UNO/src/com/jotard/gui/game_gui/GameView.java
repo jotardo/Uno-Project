@@ -28,9 +28,10 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import com.jotard.controller.GameController;
+import com.jotard.controller.GameControllerInterface;
 import com.jotard.gui.Main;
 import com.jotard.gui.card_button.CardButton;
 import com.jotard.gui.card_button.CardButtonFactory;
@@ -45,12 +46,14 @@ public class GameView extends JFrame implements GameViewInterface {
 
 	private static final long serialVersionUID = 1L;
 	private JLabel lastPlayedCardGraphic;
+	private JLabel whatHappenLabel;
 	private Box leftPanel, rightPanel, upPanel, downPanel;
 	private OrderPanel leftOrderPanel, rightOrderPanel, upOrderPanel, downOrderPanel;
-	private GameController gameController;
+	private GameControllerInterface gameController;
 	private List<PlayerUI> uiList;
 
-	public GameView(GameController gameController) {
+	public GameView(GameControllerInterface gameController) {
+		setTitle("Board");
 		setSize(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().width,
 				GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height);
 		setResizable(false);
@@ -62,6 +65,39 @@ public class GameView extends JFrame implements GameViewInterface {
 		setVisible(true);
 		this.gameController = gameController;
 		this.uiList = new ArrayList<>();
+	}
+
+	private void setUpCenter() {
+		JPanel center = new JPanel(new BorderLayout());
+		center.setBorder(BorderFactory.createEtchedBorder());
+		JPanel pParent = new JPanel(new BorderLayout());
+		pParent.setBorder(BorderFactory.createTitledBorder(""));
+		JPanel p = new JPanel();
+		p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
+		p.add(Box.createGlue());
+		p.add(createDrawImage());
+		p.add(Box.createGlue());
+		p.add(lastPlayedCardGraphic = new JLabel());
+		p.add(Box.createGlue());
+		pParent.add(p);
+		pParent.add(whatHappenLabel = new JLabel("", JLabel.CENTER), BorderLayout.SOUTH);
+		center.add(pParent);
+		center.add(leftOrderPanel = new OrderPanel(OrderPanel.LEFT), BorderLayout.WEST);
+		center.add(rightOrderPanel = new OrderPanel(OrderPanel.RIGHT), BorderLayout.EAST);
+		center.add(upOrderPanel = new OrderPanel(OrderPanel.UP), BorderLayout.NORTH);
+		center.add(downOrderPanel = new OrderPanel(OrderPanel.DOWN), BorderLayout.SOUTH);
+		add(center);
+	}
+
+	private void setUpPlayerHand() {
+		add(leftPanel = new Box(BoxLayout.Y_AXIS), BorderLayout.WEST);
+		leftPanel.setPreferredSize(new Dimension(130, getPreferredSize().height));
+		add(rightPanel = new Box(BoxLayout.Y_AXIS), BorderLayout.EAST);
+		rightPanel.setPreferredSize(new Dimension(130, getPreferredSize().height));
+		add(upPanel = new Box(BoxLayout.X_AXIS), BorderLayout.NORTH);
+		upPanel.setPreferredSize(new Dimension(getPreferredSize().width, 190));
+		add(downPanel = new Box(BoxLayout.X_AXIS), BorderLayout.SOUTH);
+		downPanel.setPreferredSize(new Dimension(getPreferredSize().width, 190));
 	}
 
 	private void setUpSettings() {
@@ -153,36 +189,6 @@ public class GameView extends JFrame implements GameViewInterface {
 		diag.setVisible(true);
 	}
 
-	private void setUpPlayerHand() {
-		add(leftPanel = new Box(BoxLayout.Y_AXIS), BorderLayout.WEST);
-		leftPanel.setPreferredSize(new Dimension(130, getPreferredSize().height));
-		add(rightPanel = new Box(BoxLayout.Y_AXIS), BorderLayout.EAST);
-		rightPanel.setPreferredSize(new Dimension(130, getPreferredSize().height));
-		add(upPanel = new Box(BoxLayout.X_AXIS), BorderLayout.NORTH);
-		upPanel.setPreferredSize(new Dimension(getPreferredSize().width, 190));
-		add(downPanel = new Box(BoxLayout.X_AXIS), BorderLayout.SOUTH);
-		downPanel.setPreferredSize(new Dimension(getPreferredSize().width, 190));
-	}
-
-	private void setUpCenter() {
-		JPanel center = new JPanel(new BorderLayout());
-		center.setBorder(BorderFactory.createEtchedBorder());
-		JPanel p = new JPanel();
-		p.setBorder(BorderFactory.createTitledBorder(""));
-		p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
-		p.add(Box.createGlue());
-		p.add(createDrawImage());
-		p.add(Box.createGlue());
-		p.add(lastPlayedCardGraphic = new JLabel());
-		p.add(Box.createGlue());
-		center.add(p);
-		center.add(leftOrderPanel = new OrderPanel(OrderPanel.LEFT), BorderLayout.WEST);
-		center.add(rightOrderPanel = new OrderPanel(OrderPanel.RIGHT), BorderLayout.EAST);
-		center.add(upOrderPanel = new OrderPanel(OrderPanel.UP), BorderLayout.NORTH);
-		center.add(downOrderPanel = new OrderPanel(OrderPanel.DOWN), BorderLayout.SOUTH);
-		add(center);
-	}
-
 	private JLabel createDrawImage() {
 		return new JLabel() {
 			private static final long serialVersionUID = 1L;
@@ -208,6 +214,16 @@ public class GameView extends JFrame implements GameViewInterface {
 			Image i = ImageManager.getInstance().getScaledImage(c.getImageURL(), 0.35d);
 			lastPlayedCardGraphic.setIcon(new ImageIcon(i));
 		}
+	}
+
+	@Override
+	public void popupError(String message) {
+		JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
+	}
+
+	@Override
+	public void updateStatus(String message) {
+		this.whatHappenLabel.setText(message);
 	}
 
 	public void drawPlayers(List<PlayerManager> playersList) {
@@ -292,8 +308,8 @@ public class GameView extends JFrame implements GameViewInterface {
 		jdiag.setTitle("Choose the color of this wild card");
 		jdiag.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		jdiag.add(panel);
-		jdiag.setLocationRelativeTo(null);
 		jdiag.pack();
+		jdiag.setLocationRelativeTo(null);
 		jdiag.setResizable(false);
 		jdiag.setModalityType(ModalityType.APPLICATION_MODAL);
 		jdiag.setVisible(true);
@@ -331,8 +347,8 @@ public class GameView extends JFrame implements GameViewInterface {
 		jdiag.setTitle("Choose the color of this wild draw 4 card");
 		jdiag.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		jdiag.add(panel);
-		jdiag.setLocationRelativeTo(null);
 		jdiag.pack();
+		jdiag.setLocationRelativeTo(null);
 		jdiag.setResizable(false);
 		jdiag.setModalityType(ModalityType.APPLICATION_MODAL);
 		jdiag.setVisible(true);

@@ -80,4 +80,24 @@ public class GameViewAdapter implements GameViewInterface, GameViewUpdater {
 		this.view.destroyView();
 	}
 
+	@Override
+	public void receiveNotifyError(String message) {
+		this.popupError(message);
+	}
+
+	@Override
+	public void popupError(String message) {
+		this.view.popupError(message);
+	}
+	
+	@Override
+	public void receiveNotifyStatus(String message) {
+		this.updateStatus(message);
+	}
+	
+	@Override
+	public void updateStatus(String message) {
+		this.view.updateStatus(message);
+	}
+
 }

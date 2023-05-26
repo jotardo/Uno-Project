@@ -105,13 +105,13 @@ public class HumanPlayerUI extends PlayerUI implements ActionListener {
 		}
 		drawButton.setEnabled(isPlayable);
 		endButton.setEnabled(isPlayable && this.hasDrawnOncePerTurn);
-		showFullHandButton.setEnabled(isPlayable && tooMuchCard);
+		showFullHandButton.setEnabled(tooMuchCard);
 	}
 
 	@Override
 	public void updateDisplay(PlayerManager playerManager) {
 		if (playerManager.isTakingTurn())
-			setBorder(BorderFactory.createLineBorder(Color.RED));
+			setBorder(BorderFactory.createLineBorder(Color.RED, 5));
 		else
 			setBorder(BorderFactory.createEtchedBorder());
 		handPanel.removeAll();
@@ -169,7 +169,7 @@ public class HumanPlayerUI extends PlayerUI implements ActionListener {
 			this.moreHandCardButton.get(i).addActionListener(al);
 			d.add(this.moreHandCardButton.get(i), gbc);
 			gbc.gridx++;
-			if (gbc.gridx >= 14) {
+			if (gbc.gridx >= 12) {
 				gbc.gridx = 0;
 				gbc.gridy++;
 			}

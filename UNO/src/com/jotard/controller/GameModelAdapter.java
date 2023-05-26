@@ -33,9 +33,19 @@ public class GameModelAdapter implements GameModel, GameModelObserver {
 			gmo.receiveViewUpdate(this.getPlayersList(), this.getLastPlayedCard(), this.isNormalOrder());
 	}
 
-	private void requestUpdateEndGame(PlayerManager pm) {
+	public void requestUpdateEndGame(PlayerManager pm) {
 		for (GameViewUpdater gmo : this.observees)
 			gmo.receiveEndGameUpdate(pm);
+	}
+
+	public void requestNotifyError(String message) {
+		for (GameViewUpdater gmo : this.observees)
+			gmo.receiveNotifyError(message);
+	}
+
+	public void requestNotifyStatus(String message) {
+		for (GameViewUpdater gmo : this.observees)
+			gmo.receiveNotifyStatus(message);
 	}
 
 	public void startGame() {
@@ -127,6 +137,18 @@ public class GameModelAdapter implements GameModel, GameModelObserver {
 	public void endGame(PlayerManager pm) {
 		this.model.endGame(pm);
 		this.requestUpdateEndGame(pm);
+	}
+
+	@Override
+	public void notifyError(String message) {
+		this.model.notifyError(message);
+		this.requestNotifyError(message);
+	}
+	
+	@Override
+	public void notifyStatus(String message) {
+		this.model.notifyStatus(message);
+		this.requestNotifyStatus(message);
 	}
 
 }

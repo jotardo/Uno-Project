@@ -18,6 +18,7 @@ public class HumanPlayer implements PlayerManager {
 	private boolean isBanned;
 	private boolean isTakingTurn;
 	private int startDraw;
+	private String status;
 
 	public HumanPlayer(String name, GameModel gm) {
 		this.name = name;
@@ -41,32 +42,37 @@ public class HumanPlayer implements PlayerManager {
 
 	@Override
 	public void drawCard() {
-		System.out.println(name + ":: draw one card");
-		deck.drawCard(this);
+		this.gameManager.notifyStatus(name + ":: draw one card");
+		this.deck.drawCard(this);
 	}
 
 	@Override
 	public void drawCard(int number) {
-		System.out.println(name + ":: draw " + number + " card");
-		deck.drawCard(this, number);
+		this.gameManager.notifyStatus(name + ":: draw " + number + " cards");
+		this.deck.drawCard(this, number);
 	}
 
 	@Override
 	public void takeTurn() {
+		boolean hasDrawn = this.startDraw > 0;
+		this.status = this.name;
 		this.isTakingTurn = true;
 		if (this.startDraw > 0) {
-			drawCard(startDraw);
+			this.drawCard(startDraw);
 			this.startDraw = 0;
 		}
 		if (this.isBanned) {
-			System.out.println(name + ":: currently banned!");
+			if (hasDrawn)
+				this.status += " and";
+			this.gameManager.notifyStatus(this.status);
+			this.status += " is currently banned!";
 			this.isBanned = false;
 			this.gameManager.endCurrentPlayerTurn();
 		}
-		System.out.println(this.cardHand);
 	}
 
-	public void promptingAction(boolean hasDrawnFirstCard) {}
+	public void promptingAction(boolean hasDrawnFirstCard) {
+	}
 
 	@Override
 	public void addCardToHand(Card pop) {
@@ -82,14 +88,14 @@ public class HumanPlayer implements PlayerManager {
 		Card card = this.cardHand.get(cardIndex);
 		if (card.getColor() == null || card.getColor().equals(this.lastCardPlayed.getColor())
 				|| (card.getNumber() != -1 && card.getNumber() == this.lastCardPlayed.getNumber())) {
-			System.out.println(name + ":: played " + this.cardHand.get(cardIndex));
+			gameManager.notifyStatus(name + " played " + this.cardHand.get(cardIndex));
 			card.play(this.gameManager);
 			removeCardFromHand(card);
 			if (this.cardHand.isEmpty())
 				this.gameManager.endGame(this);
 		}
 		else {
-			System.out.println("BRUH REPLAY");
+			this.gameManager.notifyError("The card you played (" + this.cardHand.get(cardIndex) + ") is invalid");
 		}
 	}
 

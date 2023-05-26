@@ -55,7 +55,7 @@ public class CPUPlayerUI extends PlayerUI {
 	@Override
 	public void updateDisplay(PlayerManager playerManager) {
 		if (playerManager.isTakingTurn())
-			setBorder(BorderFactory.createLineBorder(Color.RED));
+			setBorder(BorderFactory.createLineBorder(Color.RED, 5));
 		else
 			setBorder(BorderFactory.createEtchedBorder());
 		this.handSize = String.format("%02d", playerManager.getPlayerHand().size());

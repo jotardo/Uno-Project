@@ -11,7 +11,7 @@ import com.jotard.structure.card.CardFactory;
 import com.jotard.structure.game.Game;
 import com.jotard.structure.game.GameModel;
 
-public class GameController implements Runnable {
+public class GameController implements GameControllerInterface, Runnable {
 	
 	private GameModelAdapter gameModelAdapter;
 	private GameViewAdapter gameViewAdapter;
@@ -33,6 +33,9 @@ public class GameController implements Runnable {
 				}
 				else {
 					gameModelAdapter.takeCurrentPlayerTurn();
+					if (gameModelAdapter.getPlayersList().get(0).isTakingTurn()) {
+						gameModelAdapter.notifyStatus("It's your turn now");
+					}
 				}
 			}
 		});
