@@ -10,6 +10,11 @@ public class ActionCard implements Card {
 	private String color;
 	private int functionType;
 
+	public ActionCard(String color, int functionType) {
+		this.color = color;
+		this.functionType = functionType;
+	}
+
 	@Override
 	public String toString() {
 		String result = "Action:" + this.color + " ";
@@ -27,11 +32,6 @@ public class ActionCard implements Card {
 		return result;
 	}
 
-	public ActionCard(String color, int functionType) {
-		this.color = color;
-		this.functionType = functionType;
-	}
-
 	@Override
 	public String getColor() {
 		return color;
@@ -39,7 +39,7 @@ public class ActionCard implements Card {
 
 	@Override
 	public int getNumber() {
-		return -1;
+		return functionType - 4;
 	}
 
 	@Override

@@ -68,20 +68,6 @@ public class HumanPlayer implements PlayerManager {
 
 	public void promptingAction(boolean hasDrawnFirstCard) {}
 
-	private void promptDraw(boolean hasDrawnFirstCard) {
-		if (hasDrawnFirstCard) {
-			System.out.println("Error: you have drawn a card, play a card or end your turn");
-			promptingAction(true);
-			return;
-		} else {
-			drawCard();
-			hasDrawnFirstCard = true;
-			System.out.println(name + "'s hand = " + cardHand);
-			promptingAction(true);
-			return;
-		}
-	}
-
 	@Override
 	public void addCardToHand(Card pop) {
 		this.cardHand.add(pop);
@@ -99,6 +85,8 @@ public class HumanPlayer implements PlayerManager {
 			System.out.println(name + ":: played " + this.cardHand.get(cardIndex));
 			card.play(this.gameManager);
 			removeCardFromHand(card);
+			if (this.cardHand.isEmpty())
+				this.gameManager.endGame(this);
 		}
 		else {
 			System.out.println("BRUH REPLAY");

@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.jotard.structure.card.Card;
 import com.jotard.structure.card.CardFactory;
-import com.jotard.structure.card.WildCard;
 import com.jotard.structure.deck.Deck;
 import com.jotard.structure.game.GameModel;
 
@@ -80,7 +79,7 @@ public class CPUPlayer implements PlayerManager {
 		if (playableCard.isEmpty()) {
 			if (!hasDrawnFirstCard) {
 				this.gameManager.getCurrentPlayerDrawCard();
-				promptingAction(true);
+				this.gameManager.promptCurrentPlayerAction(true);
 			}
 			else {
 				this.gameManager.endCurrentPlayerTurn();
@@ -123,6 +122,8 @@ public class CPUPlayer implements PlayerManager {
 			removeCardFromHand(card);
 			card.play(this.gameManager);
 		}
+		if (this.cardHand.isEmpty())
+			this.gameManager.endGame(this);
 	}
 
 	@Override

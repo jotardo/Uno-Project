@@ -3,8 +3,6 @@ package com.jotard.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.SwingUtilities;
-
 import com.jotard.structure.card.Card;
 import com.jotard.structure.game.GameModel;
 import com.jotard.structure.player.PlayerManager;
@@ -33,6 +31,11 @@ public class GameModelAdapter implements GameModel, GameModelObserver {
 	public void requestUpdateView() {
 		for (GameViewUpdater gmo : this.observees)
 			gmo.receiveViewUpdate(this.getPlayersList(), this.getLastPlayedCard(), this.isNormalOrder());
+	}
+
+	private void requestUpdateEndGame(PlayerManager pm) {
+		for (GameViewUpdater gmo : this.observees)
+			gmo.receiveEndGameUpdate(pm);
 	}
 
 	public void startGame() {
@@ -105,8 +108,8 @@ public class GameModelAdapter implements GameModel, GameModelObserver {
 	}
 
 	@Override
-	public void promptCurrentPlayerAction() {
-		this.model.promptCurrentPlayerAction();
+	public void promptCurrentPlayerAction(boolean hasDrawnFirst) {
+		this.model.promptCurrentPlayerAction(hasDrawnFirst);
 		this.requestUpdateView();
 	}
 
@@ -121,8 +124,9 @@ public class GameModelAdapter implements GameModel, GameModelObserver {
 	}
 
 	@Override
-	public void endGame() {
-		this.model.endGame();
+	public void endGame(PlayerManager pm) {
+		this.model.endGame(pm);
+		this.requestUpdateEndGame(pm);
 	}
 
 }

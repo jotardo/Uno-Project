@@ -15,7 +15,8 @@ public class OrderPanel extends JPanel{
 	public static final byte UP = 2;
 	public static final byte RIGHT = 1;
 	public static final byte LEFT = 0;
-	private static final double IMAGE_SCALE = 0.12;
+	private static final double IMAGE_SCALE = 0.1;
+	private static final int IMAGE_SPACING = 60;
 
 	private boolean isNormalOrientation;
 	private byte currentOrientation;
@@ -23,7 +24,7 @@ public class OrderPanel extends JPanel{
 	public OrderPanel(byte orientation) {
 		this.currentOrientation = orientation;
 		this.isNormalOrientation = false;
-		setPreferredSize(new Dimension(70,70));
+		setPreferredSize(new Dimension(45,45));
 	}
 	
 	public void updateNormalOrientation(boolean isNormalOritentation) {
@@ -40,20 +41,24 @@ public class OrderPanel extends JPanel{
 		switch (this.currentOrientation) {
 		case DOWN:
 			i = isNormalOrientation ? im.getScaledImage("/image/Arrow_Right.png", IMAGE_SCALE) : im.getScaledImage("/image/Arrow_Left.png", IMAGE_SCALE);
-			g.drawImage(i, getWidth() / 2 - i.getWidth(null) / 2, 0, i.getWidth(null), i.getHeight(null), null);
 			break;
 		case UP:
 			i = isNormalOrientation ? im.getScaledImage("/image/Arrow_Left.png", IMAGE_SCALE) : im.getScaledImage("/image/Arrow_Right.png", IMAGE_SCALE);
-			g.drawImage(i, getWidth() / 2 - i.getWidth(null) / 2, 0, i.getWidth(null), i.getHeight(null), null);
 			break;
 		case LEFT:
 			i = isNormalOrientation ? im.getScaledImage("/image/Arrow_Down.png", IMAGE_SCALE) : im.getScaledImage("/image/Arrow_Up.png", IMAGE_SCALE);
-			g.drawImage(i, 0, getHeight() / 2 - i.getHeight(null) / 2, i.getWidth(null), i.getHeight(null), null);
 			break;
 		case RIGHT:
 			i = isNormalOrientation ? im.getScaledImage("/image/Arrow_Up.png", IMAGE_SCALE) : im.getScaledImage("/image/Arrow_Down.png", IMAGE_SCALE);
-			g.drawImage(i, 0, getHeight() / 2 - i.getHeight(null) / 2, i.getWidth(null), i.getHeight(null), null);
 			break;
+		}
+		if (this.currentOrientation == LEFT || this.currentOrientation == RIGHT) {
+			for (int d = 20; d < getHeight(); d+=i.getHeight(null) + IMAGE_SPACING)
+				g.drawImage(i, 0, d, i.getWidth(null), i.getHeight(null), null);
+		}
+		else {
+			for (int d = 0; d < getWidth(); d+=i.getWidth(null) + IMAGE_SPACING)
+				g.drawImage(i, d, 0, i.getWidth(null), i.getHeight(null), null);
 		}
 		g.dispose();
 	}

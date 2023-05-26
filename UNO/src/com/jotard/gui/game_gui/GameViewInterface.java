@@ -16,5 +16,7 @@ public interface GameViewInterface {
 	public void drawPlayers(List<PlayerManager> playersList);
 	public void requestDrawCard();
 	public void requestEndTurn();
+	public void drawEndGame(PlayerManager pm);
+	public void destroyView();
 	
 }

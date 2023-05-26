@@ -64,6 +64,20 @@ public class GameViewAdapter implements GameViewInterface, GameViewUpdater {
 	public void requestEndTurn() {
 		this.view.requestEndTurn();
 	}
+
+	@Override
+	public void drawEndGame(PlayerManager pm) {
+		this.view.drawEndGame(pm);
+	}
+
+	@Override
+	public void receiveEndGameUpdate(PlayerManager pm) {
+		this.drawEndGame(pm);
+	}
 	
+	@Override
+	public void destroyView() {
+		this.view.destroyView();
+	}
 
 }

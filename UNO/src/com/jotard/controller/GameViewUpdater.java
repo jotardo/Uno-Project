@@ -7,4 +7,5 @@ import com.jotard.structure.player.PlayerManager;
 
 public interface GameViewUpdater {
 	public void receiveViewUpdate(List<PlayerManager> pList, Card lastPlayedCard, boolean normalOrder);
+	public void receiveEndGameUpdate(PlayerManager pm);
 }

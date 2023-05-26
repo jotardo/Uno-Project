@@ -1,7 +1,6 @@
 package com.jotard.structure.deck;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Stack;
 
 import com.jotard.structure.card.Card;
@@ -24,17 +23,17 @@ public class Deck {
 		String[] color = {Card.RED, Card.GREEN, Card.BLUE, Card.YELLOW};
 		CardFactory cf = CardFactory.getInstance();
 		for (String c: color) {
-			this.cardList.add(cf.createNormalCard(c, 0));
-			for (int i = 1; i <= 9; i++) {
-				this.cardList.add(cf.createNormalCard(c, i));
-				this.cardList.add(cf.createNormalCard(c, i));
-			}
-			this.cardList.add(cf.createBanCard(c));
-			this.cardList.add(cf.createBanCard(c));
-			this.cardList.add(cf.createDrawTwoCard(c));
-			this.cardList.add(cf.createDrawTwoCard(c));
-			this.cardList.add(cf.createReverseCard(c));
-			this.cardList.add(cf.createReverseCard(c));
+//			this.cardList.add(cf.createNormalCard(c, 0));
+//			for (int i = 1; i <= 9; i++) {
+//				this.cardList.add(cf.createNormalCard(c, i));
+//				this.cardList.add(cf.createNormalCard(c, i));
+//			}
+//			this.cardList.add(cf.createBanCard(c));
+//			this.cardList.add(cf.createBanCard(c));
+//			this.cardList.add(cf.createDrawTwoCard(c));
+//			this.cardList.add(cf.createDrawTwoCard(c));
+//			this.cardList.add(cf.createReverseCard(c));
+//			this.cardList.add(cf.createReverseCard(c));
 			this.cardList.add(cf.createWildCard());
 			this.cardList.add(cf.createWildDraw4Card());
 		}
@@ -43,9 +42,9 @@ public class Deck {
 	}
 	
 	public void pickFirstCard(Game g) {
-		while (this.cardList.peek().toString().startsWith("Wild")) {
-			this.cardList.add(0, this.cardList.pop());
-		}
+//		while (this.cardList.peek().toString().startsWith("Wild")) {
+//			this.cardList.add(0, this.cardList.pop());
+//		}
 		g.setLastPlayedCard(this.cardList.pop());
 		this.gameNotifier.notifyDeck();
 	}

@@ -3,7 +3,6 @@ package com.jotard.gui.player_gui;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import com.jotard.controller.GameController;
 import com.jotard.gui.card_button.CardButton;
 import com.jotard.gui.card_button.CardButtonFactory;
 import com.jotard.gui.game_gui.GameViewInterface;
@@ -11,15 +10,14 @@ import com.jotard.structure.card.Card;
 import com.jotard.structure.player.PlayerManager;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dialog.ModalityType;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.awt.LayoutManager;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,11 +25,12 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 
 public class HumanPlayerUI extends PlayerUI implements ActionListener {
 
-	public static final int MAX_HAND_SIZE = 10;
+	public static final int MAX_HAND_SIZE = 12;
 	private static final long serialVersionUID = 1L;
 	private JPanel handPanel;
 	private JButton drawButton;
@@ -44,24 +43,34 @@ public class HumanPlayerUI extends PlayerUI implements ActionListener {
 
 	public HumanPlayerUI(PlayerManager playerManager, GameViewInterface gameView) {
 		super();
-		setLayout(new FlowLayout());
+		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		JPanel p1, p2;
 		add(p1 = new JPanel());
 		p1.setLayout(new BoxLayout(p1, BoxLayout.Y_AXIS));
-		p1.add(new JLabel(playerManager.getPlayerName()));
+		p1.add(new JLabel(playerManager.getPlayerName(), JLabel.CENTER));
 		p1.add(handPanel = new JPanel());
+		handPanel.add(CardButtonFactory.getInstance().createNormalWildCard());
 		add(p2 = new JPanel());
 		p2.setLayout(new BoxLayout(p2, BoxLayout.Y_AXIS));
 		p2.add(Box.createGlue());
-		p2.add(drawButton = new JButton("Draw"));
+		p2.add(drawButton = new JButton("Draw a card"));
 		drawButton.addActionListener(this);
 		p2.add(Box.createGlue());
 		p2.add(endButton = new JButton("End turn"));
 		endButton.addActionListener(this);
 		p2.add(Box.createGlue());
-		p2.add(showFullHandButton = new JButton("Show all cards"));
+		p2.add(showFullHandButton = new JButton("Show more cards"));
 		showFullHandButton.addActionListener(this);
 		p2.add(Box.createGlue());
+		for (Component c : p1.getComponents()) {
+			((JComponent) c).setAlignmentX(CENTER_ALIGNMENT);
+		}
+		Dimension d = new Dimension(showFullHandButton.getMaximumSize().width + 25, showFullHandButton.getMaximumSize().height);
+		p2.setPreferredSize(d);
+		for (Component c : p2.getComponents()) {
+			((JComponent) c).setAlignmentX(CENTER_ALIGNMENT);
+			c.setMaximumSize(d);
+		}
 
 		this.handCardButton = new ArrayList<>();
 		this.moreHandCardButton = new ArrayList<>();
@@ -79,13 +88,12 @@ public class HumanPlayerUI extends PlayerUI implements ActionListener {
 			cb = CardButtonFactory.getInstance().createCard(card);
 			if (i < MAX_HAND_SIZE) {
 				this.handPanel.add(cb);
-				this.handCardButton.add(cb);
-				cb.addActionListener(this);
 			}
 			else {
 				this.moreHandCardButton.add(cb);
-				this.handCardButton.add(cb);
 			}
+			this.handCardButton.add(cb);
+			cb.addActionListener(this);
 		}
 	}
 
@@ -95,7 +103,7 @@ public class HumanPlayerUI extends PlayerUI implements ActionListener {
 		for (CardButton c : handCardButton) {
 			c.setEnabled(isPlayable);
 		}
-		drawButton.setEnabled(isPlayable && !this.hasDrawnOncePerTurn);
+		drawButton.setEnabled(isPlayable);
 		endButton.setEnabled(isPlayable && this.hasDrawnOncePerTurn);
 		showFullHandButton.setEnabled(isPlayable && tooMuchCard);
 	}
@@ -105,7 +113,7 @@ public class HumanPlayerUI extends PlayerUI implements ActionListener {
 		if (playerManager.isTakingTurn())
 			setBorder(BorderFactory.createLineBorder(Color.RED));
 		else
-			setBorder(BorderFactory.createEmptyBorder());
+			setBorder(BorderFactory.createEtchedBorder());
 		handPanel.removeAll();
 		this.handCardButton.clear();
 		this.moreHandCardButton.clear();
@@ -114,24 +122,20 @@ public class HumanPlayerUI extends PlayerUI implements ActionListener {
 		revalidate();
 		repaint();
 	}
-	
-	private void triggerActionEventParent(ActionEvent e) {
-		this.actionPerformed(e);
-	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == drawButton) {
+		if (e.getSource() == this.drawButton) {
 			if (!this.hasDrawnOncePerTurn) {
-				gameView.requestDrawCard();
-				drawButton.setEnabled(false);
-				endButton.setEnabled(true);
+				this.gameView.requestDrawCard();
+				this.drawButton.setEnabled(false);
+				this.endButton.setEnabled(true);
 				this.hasDrawnOncePerTurn = true;
 			}
 		} else if (e.getSource() == endButton) {
-			gameView.requestEndTurn();
+			this.gameView.requestEndTurn();
 		}  else if (e.getSource() == showFullHandButton) {
-			showFullHand();
+			this.showTheRemainingCard();
 		} else {
 			int index = this.handCardButton.indexOf(e.getSource());
 			if (index >= 0) {
@@ -146,21 +150,29 @@ public class HumanPlayerUI extends PlayerUI implements ActionListener {
 		}
 	}
 
-	private void showFullHand() {
+	private void showTheRemainingCard() {
 		JDialog d = new JDialog();
 		ActionListener al = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				d.dispose();
-				triggerActionEventParent(e);
 			}
 		};
-		d.setTitle("All Cards");
-		d.setLayout(new GridLayout(4, 13, 5, 5));
+		d.setTitle(this.moreHandCardButton.size() + " other cards");
+		d.setLayout(new GridBagLayout());
 		d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		for (CardButton card:this.moreHandCardButton) {
-			card.addActionListener(al);
-			d.add(card);
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.insets = new Insets(5, 5, 5, 5);
+		for (int i = 0; i < this.moreHandCardButton.size(); i++) {
+			this.moreHandCardButton.get(i).addActionListener(al);
+			d.add(this.moreHandCardButton.get(i), gbc);
+			gbc.gridx++;
+			if (gbc.gridx >= 14) {
+				gbc.gridx = 0;
+				gbc.gridy++;
+			}
 		}
 		d.pack();
 		d.setLocationRelativeTo(null);

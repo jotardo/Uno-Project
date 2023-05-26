@@ -6,7 +6,6 @@ import java.awt.FontFormatException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -28,18 +27,26 @@ import com.jotard.image.ImageManager;
 public class Main extends JFrame implements ActionListener, Runnable{
 
 	private static final long serialVersionUID = 1L;
-	private static final int SCREEN_WIDTH = 1000;
+	private static final int SCREEN_WIDTH = 900;
 	private static final int SCREEN_HEIGHT = 640;
+	private static boolean started = false;
 	private JButton button1, button4;
 
-	public Main() throws IOException {
+	public Main() {
 		super("UNO!");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		getContentPane().setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
 		pack();
 		setLocationRelativeTo(null);
-		editUI();
-		loadAndCacheImages();
+		if (!started) {
+			editUI();
+			try {
+				loadAndCacheImages();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			started = true;
+		}
 		createMenu();
 		setVisible(true);
 	}
@@ -92,11 +99,12 @@ public class Main extends JFrame implements ActionListener, Runnable{
 	private void editUI() {
 		Font f;
 		try {
-			f = Font.createFont(Font.TRUETYPE_FONT, Main.class.getResourceAsStream("/font/Stroud-anB5.ttf"));
+			f = Font.createFont(Font.TRUETYPE_FONT, Main.class.getResourceAsStream("/font/Cabin-Medium.ttf"));
 			UIManager.setLookAndFeel(new NimbusLookAndFeel());
 			UIManager.getLookAndFeelDefaults().forEach((k, v) -> {
 				if (k.toString().matches("\\w+.font")) {
-					UIManager.getLookAndFeelDefaults().put(k, f.deriveFont(28f));
+					float size = UIManager.getLookAndFeelDefaults().getFont(k).getSize2D() * 1.618f;
+					UIManager.getLookAndFeelDefaults().put(k, f.deriveFont(size));
 				}
 			});
 		} catch (FontFormatException | IOException | UnsupportedLookAndFeelException e) {
@@ -116,6 +124,7 @@ public class Main extends JFrame implements ActionListener, Runnable{
 		iManager.loadAndCacheImage("/image/Arrow_Down.png");
 		iManager.loadAndCacheImage("/image/Arrow_Left.png");
 		iManager.loadAndCacheImage("/image/Arrow_Right.png");
+		iManager.loadAndCacheImage("/image/Home_Button.png");
 		for (String c : color)
 			for (String n : number)
 				iManager.loadAndCacheImage("/image/" + c + "_" + n + ".png");

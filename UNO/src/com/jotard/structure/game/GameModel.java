@@ -1,9 +1,7 @@
 package com.jotard.structure.game;
 
 import java.util.List;
-import java.util.Scanner;
 
-import com.jotard.controller.GameModelAdapter;
 import com.jotard.structure.card.Card;
 import com.jotard.structure.player.PlayerManager;
 
@@ -16,7 +14,7 @@ public interface GameModel {
 	
 	public boolean isPlaying();
 	
-	public void endGame();
+	public void endGame(PlayerManager pm);
 
 	public boolean isNormalOrder();
 
@@ -36,7 +34,7 @@ public interface GameModel {
 	// ???
 	public void takeCurrentPlayerTurn();
 
-	public void promptCurrentPlayerAction();
+	public void promptCurrentPlayerAction(boolean hasDrawnFirst);
 
 	public void endCurrentPlayerTurn();
 

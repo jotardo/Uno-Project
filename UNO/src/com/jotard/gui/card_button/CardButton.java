@@ -25,8 +25,9 @@ public abstract class CardButton extends JButton{
 	public CardButton(String image) {
 		this.imageURL = image;
 		this.image = ImageManager.getInstance().getScaledImage(this.imageURL, 0.25d);
-		if (this.image != null) 
+		if (this.image != null) {
 			setPreferredSize(new Dimension(this.image.getWidth(null), this.image.getHeight(null)));
+		}
 		setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 	}
 	
