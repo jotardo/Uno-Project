@@ -16,9 +16,13 @@ public class GameController implements GameControllerInterface, Runnable {
 	private GameModelAdapter gameModelAdapter;
 	private GameViewAdapter gameViewAdapter;
 	private Timer t;
+	private int playerNum;
+	private int handStartNum;
 	
-	public GameController() {
-		t = new Timer(1500, new ActionListener() {
+	public GameController(int playerNum, int handStartNum) {
+		this.playerNum = playerNum;
+		this.handStartNum = handStartNum;
+		t = new Timer(2500, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (gameModelAdapter == null)
@@ -55,7 +59,7 @@ public class GameController implements GameControllerInterface, Runnable {
 		Card c = CardFactory.getInstance().createColoredWildCard(color);
 		gameModelAdapter.getCurrentPlayer().removeCardFromHand(gameModelAdapter.getCurrentPlayer().getPlayerHand().get(oldCardIndex));
 		c.play(gameModelAdapter);
-		System.out.println("You:: played " + c);
+		gameModelAdapter.notifyStatus("You:: played " + c);
 		if (gameModelAdapter.getCurrentPlayer().getPlayerHand().isEmpty())
 			gameModelAdapter.endGame(gameModelAdapter.getCurrentPlayer());
 		else
@@ -66,7 +70,7 @@ public class GameController implements GameControllerInterface, Runnable {
 		Card c = CardFactory.getInstance().createColoredWildDraw4Card(color);
 		gameModelAdapter.getCurrentPlayer().removeCardFromHand(gameModelAdapter.getCurrentPlayer().getPlayerHand().get(oldCardIndex));
 		c.play(gameModelAdapter);
-		System.out.println("You:: played " + c);
+		gameModelAdapter.notifyStatus("You played " + c);
 		if (gameModelAdapter.getCurrentPlayer().getPlayerHand().isEmpty())
 			gameModelAdapter.endGame(gameModelAdapter.getCurrentPlayer());
 		else
@@ -91,13 +95,13 @@ public class GameController implements GameControllerInterface, Runnable {
 
 	@Override
 	public void run() {
-		GameModel model = new Game();
+		GameModel model = new Game(handStartNum);
 		gameModelAdapter = new GameModelAdapter(model);
 		GameView board = new GameView(this);
 		gameViewAdapter = new GameViewAdapter(board);
 		
 		gameModelAdapter.addViewUpdater(gameViewAdapter);
-		gameModelAdapter.setUpPlayer(4, gameModelAdapter);
+		gameModelAdapter.setUpPlayer(this.playerNum, gameModelAdapter);
 		gameViewAdapter.drawPlayers(gameModelAdapter.getPlayersList());
 		gameModelAdapter.startGame();
 		this.doResume();

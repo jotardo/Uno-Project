@@ -42,21 +42,21 @@ public class HumanPlayer implements PlayerManager {
 
 	@Override
 	public void drawCard() {
-		this.gameManager.notifyStatus(name + ":: draw one card");
+		this.status += " draw a card!";
 		this.deck.drawCard(this);
 	}
 
 	@Override
 	public void drawCard(int number) {
-		this.gameManager.notifyStatus(name + ":: draw " + number + " cards");
+		this.status += " draw "+ number + " card!";
 		this.deck.drawCard(this, number);
 	}
 
 	@Override
 	public void takeTurn() {
 		boolean hasDrawn = this.startDraw > 0;
-		this.status = this.name;
 		this.isTakingTurn = true;
+		this.status = this.name;
 		if (this.startDraw > 0) {
 			this.drawCard(startDraw);
 			this.startDraw = 0;
@@ -64,8 +64,8 @@ public class HumanPlayer implements PlayerManager {
 		if (this.isBanned) {
 			if (hasDrawn)
 				this.status += " and";
-			this.gameManager.notifyStatus(this.status);
 			this.status += " is currently banned!";
+			this.gameManager.notifyStatus(this.status);
 			this.isBanned = false;
 			this.gameManager.endCurrentPlayerTurn();
 		}

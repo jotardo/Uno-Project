@@ -44,7 +44,7 @@ public class CPUPlayer implements PlayerManager {
 
 	@Override
 	public void drawCard() {
-		this.status += ", draw a card!";
+		this.status += " draw a card!";
 		this.deck.drawCard(this);
 	}
 
@@ -67,7 +67,6 @@ public class CPUPlayer implements PlayerManager {
 			if (hasDrawn)
 				this.status += " and";
 			this.status += " is currently banned!";
-			this.gameManager.notifyStatus(this.status);
 			this.isBanned = false;
 			this.gameManager.endCurrentPlayerTurn();
 		}
@@ -118,15 +117,13 @@ public class CPUPlayer implements PlayerManager {
 			else {
 				card = CardFactory.getInstance().createColoredWildCard(chosenColor);
 			}
-			this.status += ", played " + this.cardHand.get(cardIndex) + " = " + chosenColor;
-			this.gameManager.notifyStatus(this.status);
+			this.status += " played " + this.cardHand.get(cardIndex) + " = " + chosenColor;
 			this.removeCardFromHand(this.cardHand.get(cardIndex));
 			card.play(gameManager);
 			this.gameManager.endCurrentPlayerTurn();
 		}
 		else {
-			this.status += ",  played " + this.cardHand.get(cardIndex);
-			this.gameManager.notifyStatus(this.status);
+			this.status += "  played " + this.cardHand.get(cardIndex);
 			card = this.cardHand.get(cardIndex);
 			this.removeCardFromHand(card);
 			card.play(this.gameManager);
@@ -171,6 +168,7 @@ public class CPUPlayer implements PlayerManager {
 	@Override
 	public void endTurn() {
 		this.isTakingTurn = false;
+		this.gameManager.notifyStatus(this.status);
 	}
 
 	@Override

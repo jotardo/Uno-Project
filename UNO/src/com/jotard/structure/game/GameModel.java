@@ -10,8 +10,8 @@ public interface GameModel {
 	// game
 	public void setUpPlayer(int playerNum, GameModel gameModel);
 	public void startGame();
-	public boolean isPlaying();
 	public void endGame(PlayerManager pm);
+	public boolean isPlaying();
 	public boolean isNormalOrder();
 	public void setLastPlayedCard(Card card);
 	public PlayerManager getCurrentPlayer();
@@ -27,6 +27,7 @@ public interface GameModel {
 	public void advanceToNextPlayer();
 	public void getCurrentPlayerPlayCard(int cardIndex);
 	public void getCurrentPlayerDrawCard();
+	//gửi
 	public void notifyStatus(String message);
 	public void notifyError(String message);
 

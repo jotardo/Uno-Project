@@ -17,13 +17,15 @@ public class Game implements GameModel, GameNotifier{
 	private List<PlayerManager> playerList;
 	private boolean normalOrder;
 	private int currentPlayerIndex;
+	private int handStartNum;
 
-	public Game() {
+	public Game(int handStartNum) {
 		super();
 		this.deck = new Deck(this);
 		this.isPlaying = false;
 		this.normalOrder = true;
 		this.playerList = new ArrayList<>();
+		this.handStartNum = handStartNum;
 	}
 	
 	@Override
@@ -47,7 +49,7 @@ public class Game implements GameModel, GameNotifier{
 		isPlaying = true;
 		deck.generateDeck();
 		currentPlayerIndex = 0;
-		for (int i = 0; i < 7; i++)
+		for (int i = 0; i < this.handStartNum; i++)
 			for (int j = 0; j < playerList.size(); j++)
 				deck.drawCard(this.playerList.get(j));
 		deck.pickFirstCard(this);

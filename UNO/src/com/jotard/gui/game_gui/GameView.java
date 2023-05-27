@@ -3,7 +3,6 @@ package com.jotard.gui.game_gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Dialog.ModalityType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,6 +31,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import com.jotard.controller.GameControllerInterface;
+import com.jotard.gui.HelpWindow;
 import com.jotard.gui.Main;
 import com.jotard.gui.card_button.CardButton;
 import com.jotard.gui.card_button.CardButtonFactory;
@@ -61,7 +61,14 @@ public class GameView extends JFrame implements GameViewInterface {
 		setUpCenter();
 		setUpPlayerHand();
 		setUpSettings();
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				super.windowClosing(e);
+				promptingQuitGame();
+			}
+		});
 		setVisible(true);
 		this.gameController = gameController;
 		this.uiList = new ArrayList<>();
@@ -102,7 +109,18 @@ public class GameView extends JFrame implements GameViewInterface {
 
 	private void setUpSettings() {
 		JLayeredPane pane = getLayeredPane();
-		JButton settingsBtn = new SettingButton();
+		JButton settingsBtn = new JButton() {
+
+			private static final long serialVersionUID = 1L;
+			
+			@Override
+			protected void paintComponent(Graphics g) {
+				super.paintComponent(g);
+				Image i = ImageManager.getInstance().getScaledImage("/image/Home_Button.png", 2d);
+				g.drawImage(i, 5, 5, getWidth() - 10, getHeight() - 10, null);
+			}
+			
+		};
 		settingsBtn.setBounds(5, 5, 65, 65);
 		settingsBtn.addActionListener(new ActionListener() {
 
@@ -122,16 +140,17 @@ public class GameView extends JFrame implements GameViewInterface {
 			@Override
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
-				g.setColor(new Color(0, 0, 0, 35));
+				g.setColor(new Color(0, 0, 0, 64));
 				g.fillRect(0, 0, getWidth(), getHeight());
 			}
 		};
+		
 		fadeBG.setOpaque(false);
 		fadeBG.setBounds(getBounds());
 		getLayeredPane().add(fadeBG, JLayeredPane.MODAL_LAYER);
 
 		JPanel panel;
-		JButton resumeBtn, returnToMain, exitBtn;
+		JButton resumeBtn, returnToMain, exitBtn, helpBtn;
 		JDialog diag = new JDialog();
 		ActionListener al;
 		diag.setTitle("Paused");
@@ -143,19 +162,12 @@ public class GameView extends JFrame implements GameViewInterface {
 		diag.add(Box.createHorizontalStrut(60), BorderLayout.EAST);
 		diag.add(Box.createVerticalStrut(30), BorderLayout.NORTH);
 		diag.add(Box.createVerticalStrut(30), BorderLayout.SOUTH);
-		diag.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosed(WindowEvent e) {
-				super.windowClosed(e);
-				getLayeredPane().remove(fadeBG);
-				gameController.doResume();
-				repaint();
-			}
-		});
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.add(new JLabel("Pause Menu", JLabel.CENTER));
 		panel.add(Box.createVerticalStrut(20));
 		panel.add(resumeBtn = new JButton("Resume"));
+		panel.add(Box.createVerticalStrut(10));
+		panel.add(helpBtn = new JButton("Help"));
 		panel.add(Box.createVerticalStrut(10));
 		panel.add(returnToMain = new JButton("Back to menu"));
 		panel.add(Box.createVerticalStrut(10));
@@ -167,23 +179,35 @@ public class GameView extends JFrame implements GameViewInterface {
 		al = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				diag.dispose();
-				getLayeredPane().remove(fadeBG);
 				if (e.getSource() == resumeBtn) {
+					diag.dispose();
 					gameController.doResume();
 				} else if (e.getSource() == returnToMain) {
+					diag.dispose();
 					gameController.doDestroyView();
 					new Main();
+				}  else if (e.getSource() == helpBtn) {
+					new HelpWindow();
 				} else {
-					System.exit(0);
+					promptingQuitGame();
 				}
 				revalidate();
 				repaint();
 			}
 		};
 		resumeBtn.addActionListener(al);
+		helpBtn.addActionListener(al);
 		returnToMain.addActionListener(al);
 		exitBtn.addActionListener(al);
+		diag.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+				super.windowClosed(e);
+				getLayeredPane().remove(fadeBG);
+				revalidate();
+				repaint();
+			}
+		});
 		diag.pack();
 		diag.setLocationRelativeTo(null);
 		diag.setVisible(true);
@@ -195,7 +219,6 @@ public class GameView extends JFrame implements GameViewInterface {
 			private Image i = ImageManager.getInstance().getScaledImage("/image/Deck.png", 0.35d);
 
 			{
-				setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 				setPreferredSize(new Dimension(i.getWidth(null), i.getHeight(null)));
 				setMaximumSize(new Dimension(i.getWidth(null), i.getHeight(null)));
 			}
@@ -213,6 +236,7 @@ public class GameView extends JFrame implements GameViewInterface {
 			CardButton c = CardButtonFactory.getInstance().createCard(lastPlayedCard);
 			Image i = ImageManager.getInstance().getScaledImage(c.getImageURL(), 0.35d);
 			lastPlayedCardGraphic.setIcon(new ImageIcon(i));
+			lastPlayedCardGraphic.setToolTipText(c.toString());
 		}
 	}
 
@@ -420,6 +444,12 @@ public class GameView extends JFrame implements GameViewInterface {
 	@Override
 	public void destroyView() {
 		this.dispose();
+	}
+	
+	private void promptingQuitGame() {
+		int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to quit?", "Quitting", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+		if (result == JOptionPane.OK_OPTION)
+			System.exit(0);
 	}
 
 }
