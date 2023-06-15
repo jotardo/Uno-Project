@@ -10,7 +10,10 @@ public class CardButtonFactory {
 	
 	public static CardButtonFactory getInstance() {
 		if (instance == null)
-			instance = new CardButtonFactory();
+			synchronized (CardButtonFactory.class) {
+				if (instance == null)
+					instance = new CardButtonFactory();
+			}
 		return instance;
 	}
 

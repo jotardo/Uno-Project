@@ -1,33 +1,20 @@
 package com.jotard.gui.player_gui;
 
 import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
-import javax.swing.border.Border;
 
-import com.jotard.gui.Main;
 import com.jotard.image.ImageManager;
-import com.jotard.structure.card.Card;
-import com.jotard.structure.deck.Deck;
 import com.jotard.structure.player.PlayerManager;
 
 import java.awt.BasicStroke;
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 
 public class CPUPlayerUI extends PlayerUI {
 

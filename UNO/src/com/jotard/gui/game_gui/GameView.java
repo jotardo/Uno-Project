@@ -146,7 +146,7 @@ public class GameView extends JFrame implements GameViewInterface {
 		};
 		
 		fadeBG.setOpaque(false);
-		fadeBG.setBounds(getBounds());
+		fadeBG.setBounds(getLayeredPane().getBounds());
 		getLayeredPane().add(fadeBG, JLayeredPane.MODAL_LAYER);
 
 		JPanel panel;

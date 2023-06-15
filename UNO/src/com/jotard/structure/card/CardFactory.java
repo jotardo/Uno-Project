@@ -1,6 +1,5 @@
 package com.jotard.structure.card;
 
-
 public class CardFactory {
 	
 	private static CardFactory instance;
@@ -9,7 +8,10 @@ public class CardFactory {
 	
 	public static CardFactory getInstance() {
 		if (instance == null)
-			instance = new CardFactory();
+			synchronized (CardFactory.class) {
+				if (instance == null)
+					instance = new CardFactory();
+			}
 		return instance;
 	}
 

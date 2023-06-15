@@ -19,10 +19,12 @@ public class ImageManager {
 		cacheURLList = new ArrayList<>();
 	}
 
-	//singleton??
 	public static ImageManager getInstance() {
 		if (instance == null)
-			instance = new ImageManager();
+			synchronized (ImageManager.class) {
+				if (instance == null)
+					instance = new ImageManager();
+			}
 		return instance;
 	}
 
